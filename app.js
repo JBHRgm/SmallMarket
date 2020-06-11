@@ -5,7 +5,7 @@ const fav = require('serve-favicon');
 const path = require('path');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-//const passport = require('./modules/passport-config');
+const passport = require('./modules/passport-config');
 const app = express();
 const flash = require('connect-flash');
 const flash_mw = require('./modules/flashes');
@@ -74,11 +74,11 @@ app.use(
 app.use(express.json());
 
 //passport
-//app.use(passport.initialize());
-//app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 
-db.connect()
+db.connect(process.env.MONGO_URL + ':' + process.env.MONGO_PORT)
 .then(() => {
   console.log('Connected to MongoDB Database.');
   app.listen(process.env.PORT, function () {
@@ -107,7 +107,7 @@ const isAuthenticated = function (req, res, next) {
 
 // home middleware - will redirect already authenticated users to /home if they try to access authentication routes like login or register
 const redirectHome = function (req, res, next) {
-  if(req.user) return res.redirect('/home');
+  if(req.user) return res.redirect('/');
   else return next();
 }
 
@@ -115,33 +115,12 @@ const redirectHome = function (req, res, next) {
 
 // -------------------------------------------------------------------------------------------------------------------------------- Routes
 
-// Base Page
-app.get('/', function (req, res) {            
-  return res.render('index.html');
-});
+app.use('/', require('./routes/basic'));
 
-app.get('/login', function(req, res) {
-  let matches = db.getUsers();
-  matches.each(function(err, doc) {
-    console.log(doc);
-  })
-  return res.render('login.html');
-});
+app.use('/login', redirectHome, require('./routes/login'));
 
-app.post('/login', function(req, res) {
-  let mail = req.body['usermail'];
-  let pwd = req.body['userpassword'];
-  console.log("received: " + mail + " " + pwd);
-  db.setUser(mail, pwd);
-  console.log("returning ...");
-  return res.redirect('/home');
-});
+app.use('/register', redirectHome, require('./routes/register'));
 
-app.get('/home', isAuthenticated, function(req, res) {
-  return res.send('You made it to home!');
-});
-
-app.use('/register', require('./routes/register'));
 
 // -------------------------------------------------------------------------------------------------------------------------------- /Routes
 

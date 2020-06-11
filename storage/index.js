@@ -1,8 +1,11 @@
-const mongoClient = require('mongodb').MongoClient;
+const mongo = require('mongodb');
+const mongoClient = mongo.MongoClient;
+const bcrypt = require('bcrypt');
+const obid = mongo.ObjectID;
 var con;
 
-connect = () => new Promise((resolve, reject) => {
-    mongoClient.connect("mongodb://192.168.99.100:32768", { useUnifiedTopology: true }, function(err, db) {
+connect = (constring) => new Promise((resolve, reject) => {
+    mongoClient.connect(constring, { useUnifiedTopology: true }, function(err, db) {
         if (err) { reject(err); return; };
         con = db.db('marketstorage');
         resolve(con);
@@ -10,22 +13,115 @@ connect = () => new Promise((resolve, reject) => {
 });
 
 
-function getUsers () {
-    let matches = con.collection('Users').find();
-    return matches;
+async function getAllUsers () {
+    let res = [];
+    try {
+        let cursor = con.collection('Users').find();
+        for await (let doc of cursor) {
+            res.push(doc);
+        }
+    } catch (err) {
+        throw (err);
+    }
+    return res;
 }
 
-function setUser(mail, pwd) {
-    con.collection('Users').insertOne({
-        User_mail: mail,
-        User_pwd: pwd
-      });
+async function registerUser(name, mail, pwd, plz, city, tel) {
+    try {
+        pwd = await bcrypt.hash(pwd, 10);
+        con.collection('Users').insertOne({
+            username: name,
+            mail: mail,
+            password: pwd,
+            post: plz,
+            city: city,
+            phone: tel
+        });
+    } catch (err) {
+        throw (err);
+    }
 }
 
+async function checkmail (mail) {
+    try {
+        let cursor = con.collection('Users').find({ mail: mail });
+        for await (let doc of cursor) {
+            return true;
+        }
+        return false;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+async function checkusername (name) {
+    try {
+        let cursor = con.collection('Users').find({ username: name });
+        for await (let doc of cursor) {
+            return true;
+        }
+        return false;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+async function login (mail, pwd) {
+    try {
+        let cursor = con.collection('Users').find({ mail: mail });
+        for await (let doc of cursor) {
+            let valid = await bcrypt.compare(pwd, doc['password']);
+            return valid;
+        }
+    } catch (err) {
+        throw (err);
+    }
+}
+
+async function getUserByMail (mail) {
+    try {
+        let cursor = con.collection('Users').find({ mail: mail });
+        for await (let doc of cursor) {
+            return {
+                id: doc['_id'].toString(),
+                name: doc['username'],
+                mail: doc['mail'],
+                post: doc['post'],
+                city: doc['city']
+            }
+        }
+        return 0;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+async function getUserByID (uid) {
+    try {
+        let cursor = con.collection('Users').find({ _id: obid(uid) });
+        for await (let doc of cursor) {
+            return {
+                id: uid,
+                name: doc['username'],
+                mail: doc['mail'],
+                post: doc['post'],
+                city: doc['city']
+            }
+        }
+        return 0;
+    } catch (err) {
+        throw (err);
+    }
+}
 
 
 module.exports = {
-    getUsers,
-    setUser,
-    connect
+    connect,
+    getAllUsers,
+    registerUser,
+    getUserByID,
+    getUserByMail,
+    checkmail,
+    login,
+    checkusername
 }

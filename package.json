@@ -4,17 +4,24 @@
   "description": "a small web application",
   "main": "app.js",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
+    "csv-parser": "^2.3.3",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.3",
+    "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "fs": "0.0.1-security",
     "helmet": "^3.22.0",
     "mongodb": "^3.5.8",
     "nodemon": "^2.0.4",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "xregexp": "^4.3.0"
   },
   "devDependencies": {},
   "scripts": {
