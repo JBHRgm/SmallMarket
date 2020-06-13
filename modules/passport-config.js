@@ -7,10 +7,10 @@ passport.use(new LocalStrategy({
     passwordField: 'userpassword'
     },
     async function(email, password, done) {
-        const auth = await db.login(email, password);
+        const auth = await db.USER.login(email, password);
         if(!auth) return done(null, false, { message: "Ungültige Eingabedaten!" })
         else {
-            const user = await db.getUserByMail(email);
+            const user = await db.USER.getUserByMail(email);
             return done(null, user);
         }
     }
@@ -21,7 +21,7 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(async function(id, cb) {
-    let user = await db.getUserByID(id);
+    let user = await db.USER.getUserByID(id);
     cb(null, user);
 });
 

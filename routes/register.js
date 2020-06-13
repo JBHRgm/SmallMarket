@@ -46,7 +46,7 @@ const validate = async function (req, res, next) {
                 req.flash('username', 'Ungültige Eingabe!'); 
                 ok_flag = false;
             }
-            else if (await db.checkusername(name)) {
+            else if (await db.USER.checkUsername(name)) {
                 req.flash('username_taken', 'Der Benutzername ' + name + ' ist leider schon vergeben.'); 
                 ok_flag = false;
             }
@@ -82,7 +82,7 @@ const validate = async function (req, res, next) {
                 ok_flag = false;
             }
             else {
-                let taken = await db.checkmail(mail);
+                let taken = await db.USER.checkMail(mail);
                 if(taken) {
                     req.flash('mail_taken', 'Die Mail "' + mail + '" ist leider schon vergeben.');
                     ok_flag = false;
@@ -134,9 +134,9 @@ router.post('/', validate, async function(req, res) {
     let mail = req.body['mail'].trim();
     let phone = req.body['phone'].trim();
     let pwd = req.body['password'].trim();
-    
+
     try {
-        await db.registerUser(name, mail, pwd, plz, city, phone);
+        await db.USER.registerUser(name, mail, pwd, plz, city, phone);
         return res.redirect('/login');
     } catch (err) {
         console.log(err);

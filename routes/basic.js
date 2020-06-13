@@ -1,14 +1,12 @@
 const router = require('express').Router();
-const db = require('../storage');
+const USER = require('../storage/User');
 
 router.get('/', async function (req, res) { 
     try {
-        await db.registerUser('first', 'last', 'mail', 'pwd');
-        let matches = await db.getAllUsers();
-        console.log(matches);
-        let one = await db.getUserByID(matches[0]['_id']);
+        await USER.checkMail();
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        return process.exit(1);
     }
     return res.render('index.html');
 });

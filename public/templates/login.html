@@ -18,6 +18,12 @@
         <input type="password" id="userpassword" name="userpassword" placeholder="Passwort" required>
         <button type="submit" id="login-submit">Login</button>
     </form>
+    <br>
+    <div>
+      <% for (key in flashes) { %>
+        <span><%=key%>: <%=flashes[key]%></span>
+      <% } %>
+    </div>
 </body>
 
 </html>

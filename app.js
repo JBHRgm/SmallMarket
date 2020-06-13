@@ -9,7 +9,11 @@ const passport = require('./modules/passport-config');
 const app = express();
 const flash = require('connect-flash');
 const flash_mw = require('./modules/flashes');
-var db = require('./storage');
+const db = require('./storage');
+
+// require('./storage/User');
+// require('./storage/User');
+// require('./storage/User');
 
 // if(process.env.DB_HOST != 'localhost'){
 //   const redis = require('redis');
@@ -78,9 +82,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-db.connect(process.env.MONGO_URL + ':' + process.env.MONGO_PORT)
-.then(() => {
-  console.log('Connected to MongoDB Database.');
+db.createConnection(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME)
+.then(async () => {
+  await db.createTables()
+  console.log('Connected to MySQL Database.');
   app.listen(process.env.PORT, function () {
     console.log('******************************************************************');
     console.log(`SmallMarket app listening on port ${process.env.PORT}`);
@@ -121,6 +126,10 @@ app.use('/login', redirectHome, require('./routes/login'));
 
 app.use('/register', redirectHome, require('./routes/register'));
 
+app.use('/profile', isAuthenticated, require('./routes/profile'));
+
+//app.use('/settings', isAuthenticated, require('./routes/setting.js'));
+
 
 // -------------------------------------------------------------------------------------------------------------------------------- /Routes
 
@@ -133,7 +142,7 @@ app.use('/register', redirectHome, require('./routes/register'));
 
 // -------------------------------------------------------------------------------------------------------------------------------- Error handler
 // handle error 404 - page not found
-app.use('*', function (req, res, next) {
+app.use('*', function (req, res) {
   return res.send('Seems like you ran into a 404 Error, do you know where to go?');
 });
 

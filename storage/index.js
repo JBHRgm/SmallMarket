@@ -1,127 +1,69 @@
-const mongo = require('mongodb');
-const mongoClient = mongo.MongoClient;
-const bcrypt = require('bcrypt');
-const obid = mongo.ObjectID;
-var con;
+const mysql = require('mysql');
+const util = require('util');
 
-connect = (constring) => new Promise((resolve, reject) => {
-    mongoClient.connect(constring, { useUnifiedTopology: true }, function(err, db) {
-        if (err) { reject(err); return; };
-        con = db.db('marketstorage');
-        resolve(con);
+const USER = require('./User');
+const ARTICLE = require('./Article');
+const CATEGORY = require('./Category');
+const FAVORITE = require('./Favorit');
+const ART_CAT = require('./Article-Cat');
+const CHAT = require('./Chat');
+const ART_PIC = require('./Article-Pic');
+
+var pool;
+
+async function createConnection (dbhost, dbport, dbuser, dbpwd, db) {
+    pool = mysql.createPool({
+        host: dbhost,
+        port: dbport,
+        user: dbuser,
+        password: dbpwd
     });
-});
 
-
-async function getAllUsers () {
-    let res = [];
-    try {
-        let cursor = con.collection('Users').find();
-        for await (let doc of cursor) {
-            res.push(doc);
+    return new Promise(async (res, rej) => {
+        try {
+            await query(`CREATE DATABASE IF NOT EXISTS ${db};`);
+            await query(`USE ${db};`);
+            await query(`SET @@global.time_zone = '+02:00';`);
+            res();
+        } catch (err) {
+            rej(err);
         }
-    } catch (err) {
-        throw (err);
-    }
-    return res;
+        
+    })
 }
 
-async function registerUser(name, mail, pwd, plz, city, tel) {
-    try {
-        pwd = await bcrypt.hash(pwd, 10);
-        con.collection('Users').insertOne({
-            username: name,
-            mail: mail,
-            password: pwd,
-            post: plz,
-            city: city,
-            phone: tel
-        });
-    } catch (err) {
-        throw (err);
-    }
-}
-
-async function checkmail (mail) {
-    try {
-        let cursor = con.collection('Users').find({ mail: mail });
-        for await (let doc of cursor) {
-            return true;
+async function createTables () {
+    return new Promise (async (resolve, reject) => {
+        try {
+            await USER.createTable();
+            await ARTICLE.createTable();
+            await CATEGORY.createTable();
+            await FAVORITE.createTable();
+            await ART_CAT.createTable();
+            await ART_PIC.createTable();
+            await CHAT.createTable();
+            await
+            resolve();
+        } catch (err) {
+            reject(err);
         }
-        return false;
-    } catch (err) {
-        throw (err);
-    }
+    })
 }
 
-async function checkusername (name) {
-    try {
-        let cursor = con.collection('Users').find({ username: name });
-        for await (let doc of cursor) {
-            return true;
-        }
-        return false;
-    } catch (err) {
-        throw (err);
-    }
-}
 
-async function login (mail, pwd) {
-    try {
-        let cursor = con.collection('Users').find({ mail: mail });
-        for await (let doc of cursor) {
-            let valid = await bcrypt.compare(pwd, doc['password']);
-            return valid;
-        }
-    } catch (err) {
-        throw (err);
-    }
+async function query (sql) {
+    return new Promise ((resolve, reject) => {
+        pool.query(sql, (err, res) => {
+            if(err) reject(err);
+            resolve(res);
+        })
+    })
 }
-
-async function getUserByMail (mail) {
-    try {
-        let cursor = con.collection('Users').find({ mail: mail });
-        for await (let doc of cursor) {
-            return {
-                id: doc['_id'].toString(),
-                name: doc['username'],
-                mail: doc['mail'],
-                post: doc['post'],
-                city: doc['city']
-            }
-        }
-        return 0;
-    } catch (err) {
-        throw (err);
-    }
-}
-
-async function getUserByID (uid) {
-    try {
-        let cursor = con.collection('Users').find({ _id: obid(uid) });
-        for await (let doc of cursor) {
-            return {
-                id: uid,
-                name: doc['username'],
-                mail: doc['mail'],
-                post: doc['post'],
-                city: doc['city']
-            }
-        }
-        return 0;
-    } catch (err) {
-        throw (err);
-    }
-}
-
 
 module.exports = {
-    connect,
-    getAllUsers,
-    registerUser,
-    getUserByID,
-    getUserByMail,
-    checkmail,
-    login,
-    checkusername
+    createConnection,
+    createTables,
+    query,
+    USER,
+    ARTICLE
 }
