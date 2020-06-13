@@ -51,6 +51,12 @@ module.exports.createArticle = async function (title, descr, price, owner) {
     }
 }
 
+
+module.exports.locsANDcounts = async function () {
+    
+}
+
+
 module.exports.getArticleCategories = async function (aid) {
     let sql = `SELECT ${CATEGORY.TBNAME}.${CATEGORY.COLS[0]}, ${CATEGORY.TBNAME}.${CATEGORY.COLS[1]} FROM ${TBNAME} `
             + `INNER JOIN ${ART_CAT.TBNAME} ON ${ART_CAT.TBNAME}.${ART_CAT.COLS[0]} = ${TBNAME}.${COLS[0]} ` 

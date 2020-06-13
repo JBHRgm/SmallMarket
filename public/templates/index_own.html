@@ -12,7 +12,44 @@
 </head>
 
 <body>
-    <h2>Homepage</h2>
+    <h1>Homepage</h1>
+    <div style="display: flex;" id="bodywrapper">
+      <div>
+        <h2>Kategorien:</h2>
+        <form method="GET" id="searchform">
+        <% for (x = 0; x < categories.length; x++) { %>
+          <% if (categories[x]['parent'] == 0) { %>
+            <% if (x > 0) { %>
+            </ul>
+            <% } %>
+            <h3><%=categories[x]['name']%> (<%=categories[x]['count']%>)
+              <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
+            </h3>
+            <ul>
+          <% } else { %>
+            <li><%=categories[x]['name']%> (<%=categories[x]['count']%>)
+              <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
+            </li>
+          <% } %>
+        <% } %>
+      </div>
+      <div style="margin-left: 20px;">
+        <input type="checkbox" value="73547+Lorch" name="loc">
+        <input type="checkbox" value="69469+Weinheim" name="loc">
+        <div>
+            <input type="text" name="search" id="search">
+            <button type="submit" id="searchsubmit">Suchen</button> 
+          </form>
+        </div>
+        <div>
+          Dies ist eine andere flexbox
+        </div>
+      </div>
+    </div>
+    
+    
+    
 </body>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
 
 </html>
