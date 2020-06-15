@@ -2,6 +2,7 @@ const router = require('express').Router();
 const passport = require('../modules/passport-config');
 
 router.get('/', function(req, res) {
+    console.log(res.locals);
     return res.render('login.html');
 });
   

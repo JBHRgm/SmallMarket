@@ -129,14 +129,13 @@ router.get('/plz', async function(req, res) {
 // POST /register
 router.post('/', validate, async function(req, res) {
     let name = req.body['username'].trim();
-    let plz = req.body['plz'].trim();
-    let city = req.body['city'].trim();
     let mail = req.body['mail'].trim();
     let phone = req.body['phone'].trim();
     let pwd = req.body['password'].trim();
+    let address = req.body['plz'].trim() + '+' + req.body['city'].trim();
 
     try {
-        await db.USER.registerUser(name, mail, pwd, plz, city, phone);
+        await db.USER.registerUser(name, mail, pwd, address, phone);
         return res.redirect('/login');
     } catch (err) {
         console.log(err);

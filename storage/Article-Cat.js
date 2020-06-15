@@ -31,30 +31,28 @@ module.exports.createTable = async function () {
 }
 
 module.exports.catsANDcounts = async function (search = '', locs = []) {
-    console.log(locs);
     search = search.replace(/%/g, '\\%').replace(/_/g, '\\_');
     let sql_s = `SELECT cat.${CATEGORY.COLS[0]}, cat.${CATEGORY.COLS[1]}, cat.${CATEGORY.COLS[2]}, COUNT(v.id) AS count FROM ${CATEGORY.TBNAME} AS cat LEFT JOIN ${TBNAME} AS artcat ON artcat.${COLS[1]} = cat.${CATEGORY.COLS[0]} `
             + `LEFT JOIN (SELECT art.${ARTICLE.COLS[0]} FROM ${ARTICLE.TBNAME} AS art # WHERE ${ARTICLE.COLS[2]} LIKE '%${search}%' §) AS v ON v.${ARTICLE.COLS[0]} = artcat.${COLS[0]} GROUP BY cat.${CATEGORY.COLS[0]};`;
     if (locs.length > 0) {
-        let p = '';
+        let p = 'AND (';
         sql_s = sql_s.replace('#', `INNER JOIN ${USER.TBNAME} AS u ON art.${ARTICLE.COLS[5]} = u.${USER.COLS[0]}`);
         for (ctr = 0; ctr < locs.length; ctr++) {
-            let post = locs[ctr].split('+').shift();
-            let city = locs[ctr].split('+').pop();
-            p = p + `AND (u.${USER.COLS[5]}='${post}' AND u.${USER.COLS[6]}='${city}')`;
+            p = p + `u.${USER.COLS[5]}='${locs[ctr]}'`;
             if(p < locs.length - 1) p = p + ' OR ';
         }
+        p = p + ')';
         sql_s = sql_s.replace('§', p);
     } else {
         sql_s = sql_s.replace(/#|§/g, '');
     }
-    console.log(sql_s);
+    //console.log(sql_s);
     try {
         let rows = await query(sql_s);
         if (rows.length > 0) return rows;
         else return false;
     } catch(err) {
-
+        throw (err);
     }
 }
 

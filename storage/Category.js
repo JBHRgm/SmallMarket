@@ -36,7 +36,3 @@ module.exports.getAllCategories = async function () {
         throw (err);
     }
 }
-
-module.exports.getCategoriesAndCounts = async function () {
-    
-}

@@ -23,26 +23,67 @@
             </ul>
             <% } %>
             <h3><%=categories[x]['name']%> (<%=categories[x]['count']%>)
+              <% if (cat.includes(categories[x]['id'].toString())) { %>
+              <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked>
+              <% } else { %>
               <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
+              <% } %>
             </h3>
             <ul>
           <% } else { %>
             <li><%=categories[x]['name']%> (<%=categories[x]['count']%>)
+              <% if (cat.includes(categories[x]['id'].toString())) { %>
+              <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked>
+              <% } else { %>
               <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
+              <% } %>
             </li>
           <% } %>
         <% } %>
+        <h2>Ergebnisse in:</h2>
+        <ul>
+          <% for (x = 0; x < locations.length; x++) {%>
+            <li><%=locations[x]['name']%> (<%=locations[x]['count']%>)
+              <% if (loc.includes(locations[x]['address'])) { %>
+              <input type="checkbox" value="<%=locations[x]['address']%>" name="loc" checked>
+              <% } else { %>
+              <input type="checkbox" value="<%=locations[x]['address']%>" name="loc">
+              <% } %>
+            </li>
+          <% } %>
+        </ul>
       </div>
       <div style="margin-left: 20px;">
-        <input type="checkbox" value="73547+Lorch" name="loc">
-        <input type="checkbox" value="69469+Weinheim" name="loc">
         <div>
-            <input type="text" name="search" id="search">
+            <input type="text" name="search" id="search" value="<%=locals.search%>">
+            <input type="radio" name="order" value="date-a">Neueste zuerst
+            <input type="radio" name="order" value="date-d">Älteste zuerst
+            <input type="radio" name="order" value="price-a">Günstigste zuerst
+            <input type="radio" name="order" value="price-d">Teuerste zuerst
             <button type="submit" id="searchsubmit">Suchen</button> 
           </form>
         </div>
+        <br>
         <div>
-          Dies ist eine andere flexbox
+          <% for (x = 0; x < articles.length; x++) { %>
+            <div style="display: flex; justify-content: space-around;" id="article<%=articles[x]['id']%>">
+              <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
+                <img src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" width="400px" height="300px">
+              <% } else { %>
+                <img src="/static/img/articles/no-image-found.png" width="400px" height="300px">
+              <% } %>
+              <div>
+                <h3><%=articles[x]['title']%></h3>
+                <p><%=articles[x]['description']%></p>
+                <%=articles[x]['created']%>
+              </div>
+              <div>
+                <p><%=articles[x]['name']%></p>
+                <p><%=articles[x]['address']%></p>
+                <p style="color: red; font-size: medium;"><%=articles[x]['price'].toFixed(2)%> €</p>
+              </div>
+            </div>
+          <% } %>
         </div>
       </div>
     </div>

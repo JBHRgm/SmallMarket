@@ -11,9 +11,12 @@ select * from article_table;
 select * from category_table;
 select * from art_cat_table;
 select * from chat_table;
+select * from art_pic_table;
 
 SELECT @@global.time_zone;
 SET @@global.time_zone = '+02:00';
+
+INSERT INTO art_pic_table (article, ctr, picture) VALUES (1,0,'art1pic0.jpg'),(1,1,'art1pic1.jpg'),(1,2,'art1pic2.jpg'),(1,3,'art1pic3.jpg'),(1,4,'art1pic4.jpg'),(1,5,'art1pic5.jpg'),(2,0,'art2pic0.jpg'),(2,1,'art2pic1.jpg');
 
 INSERT INTO article_table (title, description, price, owner) VALUES ('Grafikkarte AMD RX 570', 'Ganz neu mit OVP.', 99.99, 1);
 INSERT INTO article_table (title, description, price, owner) VALUES ('Autoreifen BMW-3er', 'Gummigeschmack', 45.50, 2);
@@ -38,11 +41,17 @@ INSERT INTO chat_table (sender, receiver, article, msg) VALUES (1, 3, 2, 'Heyo w
 
 DELETE FROM user_table WHERE id = 3;
 SELECT id FROM article_table WHERE title LIKE '%grafik%';
+
+SELECT DISTINCT a.id, a.created, a.title, a.description, a.price, u.name, u.address, ap.picture FROM article_table AS a
+INNER JOIN art_cat_table AS ac ON ac.article = a.id
+INNER JOIN user_table AS u ON a.owner = u.id 
+LEFT JOIN (SELECT article, picture FROM art_pic_table WHERE ctr = 0) AS ap ON ap.article = a.id WHERE a.title LIKE '%%' AND u.address LIKE '%%' AND ac.category > 0 ORDER BY a.created ASC;
+
+SELECT user_table.address, count(v.id) AS anz FROM user_table LEFT JOIN (SELECT article_table.id, article_table.owner FROM article_table INNER JOIN art_cat_table ON article_table.id = art_cat_table.article WHERE article_table.title LIKE '%%' GROUP BY (article_table.id)) AS v ON user_table.id = v.owner GROUP BY (address) HAVING anz > 0;
+SELECT article_table.id FROM article_table INNER JOIN art_cat_table ON article_table.id = art_cat_table.article WHERE article_table.title LIKE '%%' AND (art_cat_table.category = 18 OR art_cat_table.category = 13);
+
 SELECT find_in_set('73547','65547,73547,55566');
-
-SELECT category_table.name, count(v.id) FROM category_table LEFT JOIN art_cat_table ON art_cat_table.category = category_table.id LEFT JOIN (SELECT id FROM article_table WHERE title LIKE '%grafik%' INNER JOIN user_table ON user_table.id = article_table.owner WHERE user_table.post = '73547' AND user_table.city = 'Lorch' OR user_table.post = '69468' AND user_table.city = 'Weinheim') AS v ON v.id = art_cat_table.article GROUP BY category_table.id;
-
-SELECT category_table.name, count(v.id) FROM category_table LEFT JOIN art_cat_table ON art_cat_table.category = category_table.id LEFT JOIN (SELECT id FROM article_table WHERE title LIKE '%grafik%') AS v ON v.id = art_cat_table.article GROUP BY category_table.id;
+SELECT category_table.name, count(v.id) FROM category_table LEFT JOIN art_cat_table ON art_cat_table.category = category_table.id LEFT JOIN (SELECT article_table.id FROM article_table INNER JOIN user_table ON user_table.id = article_table.owner WHERE title LIKE '%grafik%' AND user_table.address='73547+Lorch') AS v ON v.id = art_cat_table.article GROUP BY category_table.id;
 
 SELECT category_table.name, count(art_cat_table.article) FROM category_table LEFT JOIN art_cat_table ON art_cat_table.category = category_table.id LEFT JOIN article_table ON article_table.id = art_cat_table.article GROUP BY category_table.id;
 SELECT * FROM article_table INNER JOIN art_cat_table ON art_cat_table.article = article_table.id INNER JOIN category_table ON category_table.id = art_cat_table.category WHERE article_table.id=1;

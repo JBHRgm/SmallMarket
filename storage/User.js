@@ -9,9 +9,8 @@ const COLS = [
     'name',         // 2
     'mail',         // 3
     'password',     // 4
-    'post',         // 5
-    'city',         // 6
-    'phone'         // 7
+    'address',      // 5
+    'phone'         // 6
 ]
 
 module.exports.COLS = COLS;
@@ -24,9 +23,8 @@ module.exports.createTable = async function () {
             + `${COLS[2]} VARCHAR(25) NOT NULL UNIQUE, `
             + `${COLS[3]} VARCHAR(40) NOT NULL UNIQUE, `
             + `${COLS[4]} VARCHAR(250) NOT NULL, `
-            + `${COLS[5]} VARCHAR(5) NOT NULL, `
-            + `${COLS[6]} VARCHAR(250) NOT NULL, `
-            + `${COLS[7]} VARCHAR(20)`
+            + `${COLS[5]} VARCHAR(250) NOT NULL, `
+            + `${COLS[6]} VARCHAR(20)`
             + `);`
     try {
         query = require('./index').query;
@@ -37,11 +35,11 @@ module.exports.createTable = async function () {
 }
 
 
-module.exports.registerUser = async function (name, mail, pwd, post, city, tel) {
+module.exports.registerUser = async function (name, mail, pwd, address, tel) {
     try {
         pwd = await bcrypt.hash(pwd, 10);
         if (tel == '') tel = null;
-        let sql = `INSERT INTO ${TBNAME} (${COLS[2]},${COLS[3]},${COLS[4]},${COLS[5]},${COLS[6]},${COLS[7]}) VALUES ('${name}','${mail}','${pwd}','${post}','${city}','${tel}');`
+        let sql = `INSERT INTO ${TBNAME} (${COLS[2]},${COLS[3]},${COLS[4]},${COLS[5]},${COLS[6]}) VALUES ('${name}','${mail}','${pwd}','${address}','${tel}');`
         
         let res = await query(sql);
         return 1;

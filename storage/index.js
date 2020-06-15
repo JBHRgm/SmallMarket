@@ -60,10 +60,15 @@ async function query (sql) {
     })
 }
 
+function DateTransform (date) {
+    let ymd = date.toLocaleDateString().split('-').reverse().join('.');
+    let hms = date.toLocaleTimeString();
+    return ymd + ' ' + hms;
+}
+
 module.exports = {
+    DateTransform,
     createConnection,
     createTables,
-    query,
-    USER,
-    ARTICLE
+    query
 }

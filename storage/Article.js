@@ -1,9 +1,10 @@
 
-var query;
+var query, DateTransform;
 
 const USER = require('./User');
 const CATEGORY = require('./Category');
 const ART_CAT = require('./Article-Cat');
+const ART_PIC = require('./Article-Pic');
 
 const TBNAME = 'article_table';
 const COLS = [
@@ -30,6 +31,7 @@ module.exports.createTable = async function () {
                 + `FOREIGN KEY (${COLS[5]}) REFERENCES ${USER.TBNAME}(${USER.COLS[0]}) `
                 + `);`
         try {
+            DateTransform = require('./index').DateTransform;
             query = require('./index').query;
             await query(sql);
             res();
@@ -52,8 +54,94 @@ module.exports.createArticle = async function (title, descr, price, owner) {
 }
 
 
-module.exports.locsANDcounts = async function () {
-    
+module.exports.locsANDcounts = async function (search = '', cats = []) {
+    search = search.replace(/%/g, '\\%').replace(/_/g, '\\_');
+    let sql = `SELECT u.${USER.COLS[5]}, COUNT(v.${COLS[0]}) AS count FROM ${USER.TBNAME} AS u LEFT JOIN (SELECT a.${COLS[0]}, a.${COLS[5]} FROM `
+            + `${TBNAME} AS a INNER JOIN ${ART_CAT.TBNAME} AS ac ON a.${COLS[0]} = ac.${ART_CAT.COLS[0]} WHERE a.${COLS[2]} LIKE '%${search}%' # `
+            + `GROUP BY (a.${COLS[0]})) AS v ON u.${USER.COLS[0]} = v.${COLS[5]} GROUP BY (u.${USER.COLS[5]}) HAVING count > 0;`;
+    if (cats.length > 0) {
+        let p = 'AND (';
+        for (x = 0; x < cats.length; x++) {
+            p = p + `ac.${ART_CAT.COLS[1]} = '${cats[x]}'`;
+            if (x < cats.length - 1) p = p + ' OR ';
+        }
+        p = p + ')';
+        sql = sql.replace('#', p);
+    } else {
+        sql = sql.replace('#', '');
+    }
+    //console.log(sql);
+    try {
+        let rows = await query(sql);
+        //console.log(rows);
+        if (rows.length > 0) {
+            for (x = 0; x < rows.length; x++) {
+                let adr = rows[x][USER.COLS[5]].replace('+', ' ');
+                rows[x]['name'] = adr;
+            }
+            return rows;
+        }
+        else return false;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+
+module.exports.getArticles = async function (search, locations, categories, order) {
+    search = search.replace(/%/g, '\\%').replace(/_/g, '\\_');
+
+    let sql = `SELECT DISTINCT a.${COLS[0]}, a.${COLS[1]}, a.${COLS[2]}, a.${COLS[3]}, a.${COLS[4]}, u.${USER.COLS[2]}, u.${USER.COLS[5]}, ap.${ART_PIC.COLS[2]} FROM ${TBNAME} AS a `
+            + `INNER JOIN ${ART_CAT.TBNAME} AS ac ON ac.${ART_CAT.COLS[0]} = a.${COLS[0]} `
+            + `INNER JOIN ${USER.TBNAME} AS u ON u.${USER.COLS[0]} = a.${COLS[5]} `
+            + `LEFT JOIN (SELECT ${ART_PIC.COLS[0]}, ${ART_PIC.COLS[2]} FROM ${ART_PIC.TBNAME} WHERE ${ART_PIC.COLS[1]} = 0) AS ap ON ap.${ART_PIC.COLS[0]} = a.${COLS[0]} `
+            + `WHERE a.${COLS[2]} LIKE '%${search}%' #§`;
+
+    let p = '';
+    if (locations.length > 0) {
+        p = 'AND (';
+        for (x = 0; x < locations.length; x++) {
+            p = p + `u.${USER.COLS[5]} = '${locations[x]}'`;
+            if (x < locations.length - 1) p = p + ' OR ';
+        }
+        p = p + ') ';
+        sql = sql.replace('#', p);
+    } else sql = sql.replace('#', '');
+
+    if (categories.length > 0) {
+        p = 'AND (';
+        for (x = 0; x < categories.length; x++) {
+            p = p + `ac.${ART_CAT.COLS[1]} = '${categories[x]}'`;
+            if (x < categories.length - 1) p = p + ' OR ';
+        }
+        p = p + ')';
+        sql = sql.replace('§', p);
+    } else sql = sql.replace('§', '');
+
+    switch(order) {
+        case 'date-d': p = ` ORDER BY a.${COLS[1]} DESC;`;
+            break;
+        case 'price-a': p = ` ORDER BY a.${COLS[4]} ASC;`;
+            break;
+        case 'price-d': p = ` ORDER BY a.${COLS[4]} DESC;`;
+            break;
+        default: p = ` ORDER BY a.${COLS[1]} ASC;`;
+    }
+    sql = sql + p;
+
+    try {
+        let rows = await query(sql);
+        if (rows.length > 0) {
+            for (x = 0; x < rows.length; x++) {
+                rows[x][COLS[1]] = DateTransform(rows[x][COLS[1]]);
+                rows[x][USER.COLS[5]] = rows[x][USER.COLS[5]].replace('+', ' ');
+            }
+            return rows;
+        }
+        else return false;
+    } catch (err) {
+        throw (err);
+    }
 }
 
 

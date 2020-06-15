@@ -11,10 +11,6 @@ const flash = require('connect-flash');
 const flash_mw = require('./modules/flashes');
 const db = require('./storage');
 
-// require('./storage/User');
-// require('./storage/User');
-// require('./storage/User');
-
 // if(process.env.DB_HOST != 'localhost'){
 //   const redis = require('redis');
 //   const redisClient = redis.createClient(process.env.REDIS_URL);
@@ -127,6 +123,8 @@ app.use('/login', redirectHome, require('./routes/login'));
 app.use('/register', redirectHome, require('./routes/register'));
 
 app.use('/profile', isAuthenticated, require('./routes/profile'));
+
+app.use('/logout', isAuthenticated, require('./routes/logout'));
 
 //app.use('/settings', isAuthenticated, require('./routes/setting.js'));
 
