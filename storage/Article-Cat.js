@@ -30,16 +30,18 @@ module.exports.createTable = async function () {
     }    
 }
 
-module.exports.catsANDcounts = async function (search = '', locs = []) {
+module.exports.catsANDcounts = async function (search = '', price, locs = []) {
     search = search.replace(/%/g, '\\%').replace(/_/g, '\\_');
-    let sql_s = `SELECT cat.${CATEGORY.COLS[0]}, cat.${CATEGORY.COLS[1]}, cat.${CATEGORY.COLS[2]}, COUNT(v.id) AS count FROM ${CATEGORY.TBNAME} AS cat LEFT JOIN ${TBNAME} AS artcat ON artcat.${COLS[1]} = cat.${CATEGORY.COLS[0]} `
-            + `LEFT JOIN (SELECT art.${ARTICLE.COLS[0]} FROM ${ARTICLE.TBNAME} AS art # WHERE ${ARTICLE.COLS[2]} LIKE '%${search}%' §) AS v ON v.${ARTICLE.COLS[0]} = artcat.${COLS[0]} GROUP BY cat.${CATEGORY.COLS[0]};`;
+    let sql_s = `SELECT cat.${CATEGORY.COLS[0]}, cat.${CATEGORY.COLS[1]}, cat.${CATEGORY.COLS[2]}, COUNT(v.id) AS count FROM ${CATEGORY.TBNAME} AS cat `
+            + `LEFT JOIN ${TBNAME} AS artcat ON artcat.${COLS[1]} = cat.${CATEGORY.COLS[0]} `
+            + `LEFT JOIN (SELECT art.${ARTICLE.COLS[0]} FROM ${ARTICLE.TBNAME} AS art # WHERE art.${ARTICLE.COLS[2]} LIKE '%${search}%' AND art.${ARTICLE.COLS[4]} BETWEEN ${price[0]} AND ${price[1]} §) `
+            + `AS v ON v.${ARTICLE.COLS[0]} = artcat.${COLS[0]} GROUP BY cat.${CATEGORY.COLS[0]};`;
     if (locs.length > 0) {
         let p = 'AND (';
         sql_s = sql_s.replace('#', `INNER JOIN ${USER.TBNAME} AS u ON art.${ARTICLE.COLS[5]} = u.${USER.COLS[0]}`);
         for (ctr = 0; ctr < locs.length; ctr++) {
             p = p + `u.${USER.COLS[5]}='${locs[ctr]}'`;
-            if(p < locs.length - 1) p = p + ' OR ';
+            if(ctr < locs.length - 1) p = p + ' OR ';
         }
         p = p + ')';
         sql_s = sql_s.replace('§', p);

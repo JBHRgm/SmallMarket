@@ -45,7 +45,7 @@ SELECT id FROM article_table WHERE title LIKE '%grafik%';
 SELECT DISTINCT a.id, a.created, a.title, a.description, a.price, u.name, u.address, ap.picture FROM article_table AS a
 INNER JOIN art_cat_table AS ac ON ac.article = a.id
 INNER JOIN user_table AS u ON a.owner = u.id 
-LEFT JOIN (SELECT article, picture FROM art_pic_table WHERE ctr = 0) AS ap ON ap.article = a.id WHERE a.title LIKE '%%' AND u.address LIKE '%%' AND ac.category > 0 ORDER BY a.created ASC;
+LEFT JOIN (SELECT article, picture FROM art_pic_table WHERE ctr = 0) AS ap ON ap.article = a.id WHERE a.title LIKE '%%' AND u.address LIKE '%%' AND ac.category > 0 ORDER BY a.created DESC;
 
 SELECT user_table.address, count(v.id) AS anz FROM user_table LEFT JOIN (SELECT article_table.id, article_table.owner FROM article_table INNER JOIN art_cat_table ON article_table.id = art_cat_table.article WHERE article_table.title LIKE '%%' GROUP BY (article_table.id)) AS v ON user_table.id = v.owner GROUP BY (address) HAVING anz > 0;
 SELECT article_table.id FROM article_table INNER JOIN art_cat_table ON article_table.id = art_cat_table.article WHERE article_table.title LIKE '%%' AND (art_cat_table.category = 18 OR art_cat_table.category = 13);

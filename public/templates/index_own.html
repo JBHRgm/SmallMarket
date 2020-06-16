@@ -39,10 +39,16 @@
               <% } %>
             </li>
           <% } %>
+          <% if (x == categories.length - 1) { %> </ul> <% } %>
         <% } %>
+        <h2>Preis:</h2>
+        <div style="display: inline-block;">
+          <input type="number" name="pl" id="pl" min="0" max="9999999" value="<%=price[0]%>">
+          <input type="number" name="ph" id="ph" min="1" max="10000000" value="<%=price[1]%>">
+        </div>
         <h2>Ergebnisse in:</h2>
         <ul>
-          <% for (x = 0; x < locations.length; x++) {%>
+          <% for (x = 0; x < locations.length; x++) { %>
             <li><%=locations[x]['name']%> (<%=locations[x]['count']%>)
               <% if (loc.includes(locations[x]['address'])) { %>
               <input type="checkbox" value="<%=locations[x]['address']%>" name="loc" checked>
@@ -56,12 +62,13 @@
       <div style="margin-left: 20px;">
         <div>
             <input type="text" name="search" id="search" value="<%=locals.search%>">
-            <input type="radio" name="order" value="date-a">Neueste zuerst
-            <input type="radio" name="order" value="date-d">Älteste zuerst
-            <input type="radio" name="order" value="price-a">Günstigste zuerst
-            <input type="radio" name="order" value="price-d">Teuerste zuerst
+            <input type="radio" name="order" value="date-a" <% if (order == 'date-a') { %> checked <% } %>>Neueste zuerst
+            <input type="radio" name="order" value="date-d" <% if (order == 'date-d') { %> checked <% } %>>Älteste zuerst
+            <input type="radio" name="order" value="price-a" <% if (order == 'price-a') { %> checked <% } %>>Günstigste zuerst
+            <input type="radio" name="order" value="price-d" <% if (order == 'price-d') { %> checked <% } %>>Teuerste zuerst
             <button type="submit" id="searchsubmit">Suchen</button> 
           </form>
+          <p><%=count%> Einträge gefunden</p>
         </div>
         <br>
         <div>
@@ -92,5 +99,10 @@
     
 </body>
 <script src="/static/js/jquery-3.3.1.min.js"></script>
+<script>
+  $(() => {
+
+  })
+</script>
 
 </html>
