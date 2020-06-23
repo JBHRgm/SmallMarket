@@ -43,7 +43,7 @@ DELETE FROM user_table WHERE id = 3;
 SELECT id FROM article_table WHERE title LIKE '%grafik%';
 
 SELECT DISTINCT a.id, a.created, a.title, a.description, a.price, u.name, u.address, ap.picture FROM article_table AS a
-INNER JOIN art_cat_table AS ac ON ac.article = a.id
+INNER JOIN art_cat_table AS ac ON ac.article = a.id AND a.price BETWEEN 0 AND 50
 INNER JOIN user_table AS u ON a.owner = u.id 
 LEFT JOIN (SELECT article, picture FROM art_pic_table WHERE ctr = 0) AS ap ON ap.article = a.id WHERE a.title LIKE '%%' AND u.address LIKE '%%' AND ac.category > 0 ORDER BY a.created DESC;
 

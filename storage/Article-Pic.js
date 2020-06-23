@@ -28,3 +28,27 @@ module.exports.createTable = async function () {
         throw(err);
     }    
 }
+
+
+module.exports.getPictures = async function (aid) {
+    let sql = `SELECT ${COLS[2]} FROM ${TBNAME} WHERE ${COLS[0]} = '${aid}';`;
+    try {
+        let rows = await query(sql);
+        if (rows.length > 0) return rows;
+        else return [];
+    } catch (err) {
+        throw (err);
+    }
+}
+
+
+module.exports.getFirstPicture = async function (aid) {
+    let sql = `SELECT ${COLS[2]} FROM ${TBNAME} WHERE ${COLS[0]} = '${aid}' AND ${COLS[1]} = 0;`;
+    try {
+        let res = await query(sql);
+        if (res.length > 0) return res[0][COLS[2]];
+        else return false;
+    } catch (err) {
+        throw (err);
+    }
+}

@@ -1,5 +1,6 @@
 
 const bcrypt = require('bcrypt');
+const {DateTransform} = require('./index');
 var query;
 
 const TBNAME = 'user_table';
@@ -37,7 +38,7 @@ module.exports.createTable = async function () {
 
 module.exports.registerUser = async function (name, mail, pwd, address, tel) {
     try {
-        pwd = await bcrypt.hash(pwd, 10);
+        pwd = bcrypt.hashSync(pwd, 10);
         if (tel == '') tel = null;
         let sql = `INSERT INTO ${TBNAME} (${COLS[2]},${COLS[3]},${COLS[4]},${COLS[5]},${COLS[6]}) VALUES ('${name}','${mail}','${pwd}','${address}','${tel}');`
         
@@ -49,8 +50,8 @@ module.exports.registerUser = async function (name, mail, pwd, address, tel) {
 }
 
 
-module.exports.checkMail = async function (mail) {                              // returns true if mail existst, false otherwise
-    let sql = `SELECT ${COLS[3]} FROM ${TBNAME} WHERE ${COLS[3]}='${mail}';`;
+module.exports.checkMail = async function (mail, uid = 0) {                              // returns true if mail existst, false otherwise
+    let sql = `SELECT ${COLS[3]} FROM ${TBNAME} WHERE ${COLS[3]}='${mail}'` + (uid > 0 ? ` AND ${COLS[0]} != '${uid}'`:'') + `;`;
     try {
         let res = await query(sql);
         if (res.length > 0) return true;
@@ -100,6 +101,7 @@ module.exports.getUserByMail = async function (mail) {
                     obj[key] = res[key];
                 }
             }
+            obj[COLS[1]] = DateTransform(obj[COLS[1]], false);
             return obj;
         }
         return false;
@@ -120,10 +122,56 @@ module.exports.getUserByID = async function (uid) {
                     obj[key] = res[key];
                 }
             }
+            obj[COLS[1]] = DateTransform(obj[COLS[1]], false);
             return obj;
         }
         return false;
     } catch(err) {
         throw(err);
+    }
+}
+
+
+module.exports.getUserByName = async function (uname) {
+    let sql = `SELECT * FROM ${TBNAME} WHERE ${COLS[2]}='${uname}';`;
+    try {
+        let res = await query(sql);
+        let obj = {};
+        if (res.length > 0) {
+            res = res[0];
+            for (key in res) {
+                if (key != COLS[4]) {
+                    obj[key] = res[key];
+                }
+            }
+            obj[COLS[1]] = DateTransform(obj[COLS[1]], false);
+            return obj;
+        }
+        return false;
+    } catch(err) {
+        throw(err);
+    }
+}
+
+
+module.exports.changeContact = async function (uid, mail, phone = '') {
+    let sql = `UPDATE ${TBNAME} SET ${COLS[3]} = '${mail}', ${COLS[6]} = '${phone}' WHERE ${COLS[0]} = '${uid}';`;
+    try {
+        await query(sql);
+        return 1;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+
+module.exports.changePassword = async function (uid, new_pw) {
+    try {
+        new_pw = bcrypt.hashSync(new_pw, 10);
+        let sql = `UPDATE ${TBNAME} SET ${COLS[4]} = '${new_pw}' WHERE ${COLS[0]} = '${uid}';`;
+        await query(sql);
+        return 1;
+    } catch (err) {
+        throw (err);
     }
 }

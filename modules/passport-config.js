@@ -1,16 +1,16 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const db = require('../storage');
+const USER = require('../storage/User');
 
 passport.use(new LocalStrategy({
     usernameField: 'usermail',
     passwordField: 'userpassword'
     },
     async function(email, password, done) {
-        const auth = await db.USER.login(email, password);
+        const auth = await USER.login(email, password);
         if(!auth) return done(null, false, { message: "Ungültige Eingabedaten!" })
         else {
-            const user = await db.USER.getUserByMail(email);
+            const user = await USER.getUserByMail(email);
             return done(null, user);
         }
     }
@@ -21,7 +21,7 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(async function(id, cb) {
-    let user = await db.USER.getUserByID(id);
+    let user = await USER.getUserByID(id);
     cb(null, user);
 });
 

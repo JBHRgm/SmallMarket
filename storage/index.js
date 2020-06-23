@@ -4,7 +4,6 @@ const util = require('util');
 const USER = require('./User');
 const ARTICLE = require('./Article');
 const CATEGORY = require('./Category');
-const FAVORITE = require('./Favorit');
 const ART_CAT = require('./Article-Cat');
 const CHAT = require('./Chat');
 const ART_PIC = require('./Article-Pic');
@@ -38,7 +37,6 @@ async function createTables () {
             await USER.createTable();
             await ARTICLE.createTable();
             await CATEGORY.createTable();
-            await FAVORITE.createTable();
             await ART_CAT.createTable();
             await ART_PIC.createTable();
             await CHAT.createTable();
@@ -60,10 +58,13 @@ async function query (sql) {
     })
 }
 
-function DateTransform (date) {
+function DateTransform (date, full = true) {
     let ymd = date.toLocaleDateString().split('-').reverse().join('.');
-    let hms = date.toLocaleTimeString();
-    return ymd + ' ' + hms;
+    if (full) {
+        let hms = date.toLocaleTimeString();
+        return ymd + ' ' + hms;
+    }
+    else return ymd;
 }
 
 module.exports = {

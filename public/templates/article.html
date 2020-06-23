@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>SmallMarket</title>
+
+</head>
+
+<body>
+    <h2><%=article['title']%></h2>
+    <div style="display: flex;" id="bodywrapper">
+        <div>
+            <img width="300px" height="230px" src="/static/img/articles/art<%=article['id']%>/<%=pictures[0]['picture']%>">
+            <p><%=article['description']%></p>
+            <span><%=article['price']%></span>
+            <span><%=article['created']%></span>
+        </div>
+        <div>
+            <p><%=owner['name']%></p>
+            <p><%=owner['mail']%></p>
+            <p><%=owner['address']%></p>
+            <p>Anzeigen: <%=owner['count']%></p>
+            <p><%=owner['registered']%></p>
+        </div>
+    </div>
+    
+</body>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+
+</html>

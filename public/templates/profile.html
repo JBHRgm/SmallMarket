@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>SmallMarket</title>
+
+</head>
+
+<body>
+    <h2>Profil von <%=user['name']%></h2>
+    <div>
+        <h3>Nutzername: <%=user['name']%></h3>
+        <p>E-Mail: <%=user['mail']%></p>
+        <p>Wohnort: <%=user['address']%></p>
+        <p>Registriert seit: <%=user['registered']%></p>
+        <input type="hidden" id="ctr" value="<%=count%>">
+    </div>
+
+    <div>
+        <% for (x = 0; x < articles.length; x++) { %>
+            <div style="display: flex; justify-content: space-around;" id="article<%=articles[x]['id']%>">
+              <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
+                <img src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" width="400px" height="300px">
+              <% } else { %>
+                <img src="/static/img/articles/no-image-found.png" width="400px" height="300px">
+              <% } %>
+              <div>
+                <h3><%=articles[x]['title']%></h3>
+                <p><%=articles[x]['description']%></p>
+                <%=articles[x]['created']%>
+              </div>
+              <div>
+                <p><%=user['name']%></p>
+                <p><%=user['address']%></p>
+                <p style="color: red; font-size: medium;"><%=articles[x]['price'].toFixed(2)%> €</p>
+              </div>
+            </div>
+        <% } %>
+    </div>
+    <p id="pages">
+
+    </p>
+    
+</body>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script>
+    $(() => {
+        let ctr = $('#ctr').val();
+        for (x = 0; x < ctr/5; x++) {
+            let el = document.createElement('a');
+            el.href = window.location.href.replace(/\/\?page=[0-9]+/, '') + '/?page=' + x;
+            el.text = (x + 1).toString();
+            document.getElementById('pages').appendChild(el);
+        }
+    })
+</script>
+</html>

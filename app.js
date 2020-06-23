@@ -10,6 +10,7 @@ const app = express();
 const flash = require('connect-flash');
 const flash_mw = require('./modules/flashes');
 const db = require('./storage');
+const {redirectHome, isAuthenticated} = require('./modules/auth-redirect');
 
 // if(process.env.DB_HOST != 'localhost'){
 //   const redis = require('redis');
@@ -99,30 +100,19 @@ db.createConnection(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_USE
 app.use(flash());
 app.use(flash_mw.flashMessage);
 
-// auth middleware  - will redirect user to /login if he/she tries to access a secure route while not being authenticated
-const isAuthenticated = function (req, res, next) {
-  console.log("auth - " + req.originalUrl);
-  if (req.user) return next();
-  else return res.redirect('/login');
-}
-
-// home middleware - will redirect already authenticated users to /home if they try to access authentication routes like login or register
-const redirectHome = function (req, res, next) {
-  if(req.user) return res.redirect('/');
-  else return next();
-}
-
 // -------------------------------------------------------------------------------------------------------------------------------- /Middleware
 
 // -------------------------------------------------------------------------------------------------------------------------------- Routes
 
 app.use('/', require('./routes/basic'));
 
+app.use('/article', require('./routes/article'));
+
 app.use('/login', redirectHome, require('./routes/login'));
 
 app.use('/register', redirectHome, require('./routes/register'));
 
-app.use('/profile', isAuthenticated, require('./routes/profile'));
+app.use('/profile', require('./routes/profile'));
 
 app.use('/logout', isAuthenticated, require('./routes/logout'));
 

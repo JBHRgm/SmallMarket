@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const db = require('../storage');
+const USER = require('../storage/User');
 const xreg = require('xregexp');
 const fs = require('fs');
 const csv = require('csv-parser');
@@ -46,7 +46,7 @@ const validate = async function (req, res, next) {
                 req.flash('username', 'Ungültige Eingabe!'); 
                 ok_flag = false;
             }
-            else if (await db.USER.checkUsername(name)) {
+            else if (await USER.checkUsername(name)) {
                 req.flash('username_taken', 'Der Benutzername ' + name + ' ist leider schon vergeben.'); 
                 ok_flag = false;
             }
@@ -82,7 +82,7 @@ const validate = async function (req, res, next) {
                 ok_flag = false;
             }
             else {
-                let taken = await db.USER.checkMail(mail);
+                let taken = await USER.checkMail(mail);
                 if(taken) {
                     req.flash('mail_taken', 'Die Mail "' + mail + '" ist leider schon vergeben.');
                     ok_flag = false;
@@ -132,10 +132,10 @@ router.post('/', validate, async function(req, res) {
     let mail = req.body['mail'].trim();
     let phone = req.body['phone'].trim();
     let pwd = req.body['password'].trim();
-    let address = req.body['plz'].trim() + '+' + req.body['city'].trim();
+    let address = req.body['plz'].trim() + ' ' + req.body['city'].trim();
 
     try {
-        await db.USER.registerUser(name, mail, pwd, address, phone);
+        await USER.registerUser(name, mail, pwd, address, phone);
         return res.redirect('/login');
     } catch (err) {
         console.log(err);

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>SmallMarket</title>
+
+</head>
+
+<body>
+    <h2>Profil von <%=user['name']%></h2>
+    <div>
+        <p>Nutzername: <%=user['name']%></p>
+        <form id="profile-form" method="POST">
+            <label for="mail">E-Mail: </label>
+            <input type="email" name="mail" id="mail" value="<%=user['mail']%>" maxlength="40" minlength="5" required disabled>
+            <label for="tel">Telefon: </label>
+            <input type="tel" name="tel" id="tel" value="<%=user['phone']%>" disabled>
+            <label for="oldpw">Passwort: </label>
+            <input type="password" id="oldpw" name="oldpw" disabled>
+            <label for="oldpw">Neues Passwort: </label>
+            <input type="password" id="newpw" name="newpw" pattern="[a-zA-Z0-9+-/_]{6,15}" disabled>
+            <label for="oldpw">Wiederholen: </label>
+            <input type="password" id="confpw" name="confpw" disabled>
+            <button type="button" id="profile-submit">Bearbeiten</button>
+        </form>
+        <p>Wohnort: <%=user['address']%></p>
+        <p>Registriert seit: <%=user['registered']%></p>
+        <input type="hidden" id="ctr" value="<%=count%>">
+    </div>
+
+    <div>
+        <% for (x = 0; x < articles.length; x++) { %>
+            <div style="display: flex; justify-content: space-around;" id="article<%=articles[x]['id']%>">
+              <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
+                <img src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" width="400px" height="300px">
+              <% } else { %>
+                <img src="/static/img/articles/no-image-found.png" width="400px" height="300px">
+              <% } %>
+              <div>
+                <h3><%=articles[x]['title']%></h3>
+                <p><%=articles[x]['description']%></p>
+                <%=articles[x]['created']%>
+              </div>
+              <div>
+                <p style="color: red; font-size: medium;"><%=articles[x]['price'].toFixed(2)%> €</p>
+                <a type="button" href="/article/<%=articles[x]['id']%>/edit">Bearbeiten</a>
+                <a href="/article/<%=articles[x]['id']%>/delete">Löschen</a>
+              </div>
+            </div>
+        <% } %>
+        <p id="pages">
+
+        </p>
+    </div>
+    
+</body>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script>
+    $('#profile-submit').on('click', (event) => {
+        if ($('#profile-submit').text() == 'Bearbeiten') {
+            $('input').prop('disabled', false);
+            $('#profile-submit').text('Speichern');
+        }
+        else $('#profile-form').submit();
+    })
+    
+    $(() => {
+        let ctr = $('#ctr').val();
+        for (x = 0; x < ctr/5; x++) {
+            let el = document.createElement('a');
+            el.href = window.location.href.replace(/\/\?page=[0-9]+/, '') + '/?page=' + x;
+            el.text = (x + 1).toString();
+            document.getElementById('pages').appendChild(el);
+        }
+    })
+</script>
+</html>

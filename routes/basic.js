@@ -42,6 +42,8 @@ router.get('/', async function (req, res) {
     return res.render('index_own.html', { categories: categories, locations: locations, articles: articles });
 });
 
+
+
 module.exports = router;
 
 

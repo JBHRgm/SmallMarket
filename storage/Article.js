@@ -54,6 +54,36 @@ module.exports.createArticle = async function (title, descr, price, owner) {
 }
 
 
+module.exports.getArticle = async function (aid, aname = '') {
+    let sql = `SELECT * FROM ${TBNAME} WHERE ${COLS[0]} = '${aid}'#;`;
+    if (aname.length > 0) sql = sql.replace('#', ` AND ${COLS[2]} = '${aname}'`);
+    else sql = sql.replace('#', '');
+
+    try {
+        let article = await query(sql);
+        if (article.length > 0) {
+            article[0][COLS[1]] = DateTransform(article[0][COLS[1]]);
+            return article[0];
+        }
+        else return false;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+
+module.exports.getOwnerArticleCount = async function (uid) {
+    let sql = `SELECT COUNT(${COLS[0]}) AS ctr FROM ${TBNAME} WHERE ${COLS[5]} = '${uid}';`;
+    try {
+        let count = await query(sql);
+        if (count.length > 0) return count[0].ctr;
+        else return false;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+
 module.exports.locsANDcounts = async function (search = '', price, cats = [], locs) {
     search = search.replace(/%/g, '\\%').replace(/_/g, '\\_');
     let sql = `SELECT u.${USER.COLS[5]}, COUNT(v.${COLS[0]}) AS count FROM ${USER.TBNAME} AS u LEFT JOIN (SELECT a.${COLS[0]}, a.${COLS[5]} FROM `
@@ -77,8 +107,6 @@ module.exports.locsANDcounts = async function (search = '', price, cats = [], lo
         //console.log(rows);
         if (rows.length > 0) {
             for (x = 0; x < rows.length; x++) {
-                let adr = rows[x][USER.COLS[5]].replace('+', ' ');
-                rows[x]['name'] = adr;
                 if (locs.length > 0 && !locs.includes(rows[x][USER.COLS[5]])) continue;
                 anz_ctr += rows[x]['count'];
             }
@@ -140,7 +168,6 @@ module.exports.getArticles = async function (search, locations, categories, orde
         if (rows.length > 0) {
             for (x = 0; x < rows.length; x++) {
                 rows[x][COLS[1]] = DateTransform(rows[x][COLS[1]]);
-                rows[x][USER.COLS[5]] = rows[x][USER.COLS[5]].replace('+', ' ');
             }
             return rows;
         }
@@ -150,6 +177,26 @@ module.exports.getArticles = async function (search, locations, categories, orde
     }
 }
 
+
+module.exports.getUserArticles = async function (uid, page = 0) {
+    page = parseInt(page * 5);
+    if(page == NaN) page = 0;
+    let sql = `SELECT DISTINCT a.${COLS[0]}, a.${COLS[1]}, a.${COLS[2]}, a.${COLS[3]}, a.${COLS[4]}, a.${COLS[5]}, ap.${ART_PIC.COLS[2]} FROM ${TBNAME} AS a `
+    + `LEFT JOIN (SELECT ${ART_PIC.COLS[0]}, ${ART_PIC.COLS[2]} FROM ${ART_PIC.TBNAME} WHERE ${ART_PIC.COLS[1]} = 0) AS ap ON ap.${ART_PIC.COLS[0]} = a.${COLS[0]} WHERE a.${COLS[5]} = '${uid}' LIMIT ${page},5;`;
+
+    try {
+        let rows = await query(sql);
+        if (rows.length > 0) {
+            for (x = 0; x < rows.length; x++) {
+                rows[x][COLS[1]] = DateTransform(rows[x][COLS[1]]);
+            }
+            return rows;
+        }
+        else return false;
+    } catch (err) {
+        throw (err);
+    }
+}
 
 module.exports.getArticleCategories = async function (aid) {
     let sql = `SELECT ${CATEGORY.TBNAME}.${CATEGORY.COLS[0]}, ${CATEGORY.TBNAME}.${CATEGORY.COLS[1]} FROM ${TBNAME} `
