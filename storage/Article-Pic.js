@@ -19,7 +19,7 @@ module.exports.createTable = async function () {
             + `${COLS[1]} INT NOT NULL, `
             + `${COLS[2]} VARCHAR(250) NOT NULL, `
             + `PRIMARY KEY (${COLS[0]}, ${COLS[1]}), `
-            + `FOREIGN KEY (${COLS[0]}) REFERENCES ${ARTICLE.TBNAME}(${ARTICLE.COLS[0]}) `
+            + `FOREIGN KEY (${COLS[0]}) REFERENCES ${ARTICLE.TBNAME}(${ARTICLE.COLS[0]}) ON DELETE CASCADE`
             + `);`
     try {
         query = require('./index').query;
@@ -48,6 +48,18 @@ module.exports.getFirstPicture = async function (aid) {
         let res = await query(sql);
         if (res.length > 0) return res[0][COLS[2]];
         else return false;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+
+module.exports.getCounter = async function (aid) {
+    let sql = `SELECT MAX(${COLS[1]}) AS count FROM ${TBNAME} WHERE ${COLS[0]} = '${aid}';`;
+    try {
+        let res = await query(sql);
+        if (res[0]['count']) return res[0]['count'];
+        else return 0;
     } catch (err) {
         throw (err);
     }

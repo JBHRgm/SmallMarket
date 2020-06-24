@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>SmallMarket</title>
+
+</head>
+
+<body>
+    <div style="display: flex;" id="categorywrapper">
+        <div>
+            <% for (x = 0; x < cats.length; x++) { %>
+                <% if (cats[x]['parent'] == 0) { %>
+                <span style="display: block;" id="c<%=cats[x]['id']%>" onclick="select_cat(this.id)"><%=cats[x]['name']%></span>
+                <% } %>
+            <% } %>
+        </div>
+        <div>
+            <% for (x = 0; x < cats.length; x++) { %>
+                <% if (cats[x]['parent'] > 0) { %>
+                <span style="display: none;" id="c<%=cats[x]['id']%>p<%=cats[x]['parent']%>" onclick="select_cat(this.id)"><%=cats[x]['name']%></span>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+    <div style="display: flex;" id="bodywrapper">
+        <div>
+            <form method="POST" id="new-form">
+                <label for="a-title">Titel: </label>
+                <input type="text" minlength="5" maxlength="250" id="a-title" name="a-title" required>
+                <label for="a-price">Preis: </label>
+                <input type="number" min="0" max="10000000" step="0.01" id="a-price" name="a-price" required>
+                <label for="a-description">Beschreibung: </label>
+                <textarea name="a-description" id="a-description" cols="50" rows="10"></textarea>
+                <button type="submit" id="new-submit">Online stellen</button>
+            </form>
+            <form method="POST" action="./pic" enctype="multipart/form-data" id="pic-form">
+                <label for="a-pictures">Bilder: </label>
+                <input type="file" id="a-pictures" multiple name="a-pictures">
+                <button type="submit" id="pic-submit">Hochladen</button>
+            </form>
+        </div>
+    </div>
+    
+</body>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script>
+    function select_cat (e_id) {
+        let p_id = e_id.split('c').pop();
+        let spans = $('#categorywrapper div:nth-child(2) span');
+        $(spans).css('color', 'black');
+        if (e_id.search('p') <= 0) {        // category has no parent category, display sub-categories
+            $(spans).css('display', 'none');
+            $('#categorywrapper div span').css('color', 'black');
+            for (x = 0; x < spans.length; x++) {
+                if ($(spans[x]).prop('id').split('p').pop() == p_id) $(spans[x]).css('display', 'block');
+            }
+        }
+        $('#' + e_id).css('color', 'red');
+    }
+
+    $('#pic-form').on('submit', function (event) {
+    event.preventDefault(); // Stop the form from causing a page refresh.
+    var data = {
+      username: $('#username').val(),
+      password: $('#password').val()
+    };
+    $.ajax({
+      url: 'http://localhost/my/url',
+      data: data,
+      method: 'POST'
+    }).then(function (response) {
+      // Do stuff with the response, like add it to the page dynamically.
+      $('body').append(response);
+    }).catch(function (err) {
+      console.error(err);
+    });
+  });
+</script>
+</html>

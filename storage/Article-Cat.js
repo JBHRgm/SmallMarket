@@ -19,8 +19,8 @@ module.exports.createTable = async function () {
             + `${COLS[0]} INT NOT NULL, `
             + `${COLS[1]} INT NOT NULL, `
             + `PRIMARY KEY (${COLS[0]}, ${COLS[1]}), `
-            + `FOREIGN KEY (${COLS[0]}) REFERENCES ${ARTICLE.TBNAME}(${ARTICLE.COLS[0]}), `
-            + `FOREIGN KEY (${COLS[1]}) REFERENCES ${CATEGORY.TBNAME}(${CATEGORY.COLS[0]}) `
+            + `FOREIGN KEY (${COLS[0]}) REFERENCES ${ARTICLE.TBNAME}(${ARTICLE.COLS[0]}) ON DELETE CASCADE, `
+            + `FOREIGN KEY (${COLS[1]}) REFERENCES ${CATEGORY.TBNAME}(${CATEGORY.COLS[0]}) ON DELETE CASCADE`
             + `);`
     try {
         query = require('./index').query;

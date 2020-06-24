@@ -28,7 +28,7 @@ module.exports.createTable = async function () {
                 + `${COLS[3]} TEXT NOT NULL, `
                 + `${COLS[4]} DECIMAL(10,2), `
                 + `${COLS[5]} INT NOT NULL, `
-                + `FOREIGN KEY (${COLS[5]}) REFERENCES ${USER.TBNAME}(${USER.COLS[0]}) `
+                + `FOREIGN KEY (${COLS[5]}) REFERENCES ${USER.TBNAME}(${USER.COLS[0]}) ON DELETE CASCADE`
                 + `);`
         try {
             DateTransform = require('./index').DateTransform;
@@ -207,6 +207,40 @@ module.exports.getArticleCategories = async function (aid) {
         let rows = await query(sql);
         if(rows.length > 0) return rows;
         else return false;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+
+module.exports.getOwner = async function (aid) {
+    let sql = `SELECT ${COLS[5]} FROm ${TBNAME} WHERE ${COLS[0]} = '${aid}';`;
+    try {
+        let res = await query(sql);
+        if (res.length > 0) return res[0][COLS[5]];
+        else return false;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+module.exports.deleteArticle = async function (aid) {
+    let sql = `DELETE FROM ${TBNAME} WHERE ${COLS[0]} = '${aid}';`;
+    try {
+        await query(sql);
+        return 1;
+    } catch (err) {
+        throw (err);
+    }
+}
+
+
+module.exports.getMaxIndex = async function () {
+    let sql = `SELECT MAX(${COLS[0]}) AS count FROM ${TBNAME};`;
+    try {
+        let res = await query(sql);
+        if (res[0]['count']) return res[0]['count'];
+        else return 0;
     } catch (err) {
         throw (err);
     }

@@ -37,12 +37,13 @@ const validate = async function (req, res, next) {
         
         
         // check username, should be between 5 and 25 in length and not contain whitespaces
+        rgx = xreg('[a-zA-Z0-9]{5,25}', 'g');
         if (name.length > 25 || name.length < 5) {
             req.flash('username', 'Ungültige Eingabe!'); 
             ok_flag = false;
         }
         else {
-            if(name.search(/\s/) >= 0) {
+            if(name.search(/\s/) >= 0 || rgx.test(name) == false) {
                 req.flash('username', 'Ungültige Eingabe!'); 
                 ok_flag = false;
             }
