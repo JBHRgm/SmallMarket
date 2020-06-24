@@ -64,3 +64,15 @@ module.exports.getCounter = async function (aid) {
         throw (err);
     }
 }
+
+
+module.exports.link = async function (aid, ctr) {
+    let pn = 'art' + aid + 'pic' + ctr + '.jpg';
+    let sql = `INSERT INTO ${TBNAME} (${COLS[0]}, ${COLS[1]}, ${COLS[2]}) VALUES ('${aid}', '${ctr}', '${pn}');`;
+    try {
+        await query(sql);
+        return 1;
+    } catch (err) {
+        throw (err);
+    }
+}

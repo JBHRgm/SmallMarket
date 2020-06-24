@@ -58,3 +58,14 @@ module.exports.catsANDcounts = async function (search = '', price, locs = []) {
     }
 }
 
+
+module.exports.link = async function (aid, cid) {
+    let sql = `INSERT INTO ${TBNAME} (${COLS[0]}, ${COLS[1]}) VALUES ('${aid}', '${cid}');`;
+    try {
+        await query(sql);
+        return 1;
+    } catch (err) {
+        throw (err);
+    }
+}
+

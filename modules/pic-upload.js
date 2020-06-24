@@ -16,7 +16,6 @@ var storage = multer.diskStorage({
     callback(null, path.join(__dirname, `../public/img/articles/art${aid}`));
   },
   filename: async (req, file, callback) => {
-    
     if (!file.mimetype.startsWith('image')) {
       var message = `Ungültige Datei!.`;
       return callback(message, null);
@@ -24,11 +23,9 @@ var storage = multer.diskStorage({
 
     try {
         let aid = await ARTICLE.getMaxIndex() + 1;
-        let ctr = await ART_PIC.getCounter(aid);
-        var filename = `art${aid}pic${ctr}.jpeg`;
+        var filename = `art${aid}pic${req.body.ctr - 1}.jpg`;
     } catch (err) {
-        console.log(err);
-        return res.redirect('/');
+        throw (err);
     }
 
     callback(null, filename);
@@ -38,6 +35,7 @@ var storage = multer.diskStorage({
 var createFolder = async function (req, res, next) {
     try {
         let aid = await ARTICLE.getMaxIndex() + 1;
+        console.log(aid);
         let foldername = path.join(__dirname, `../public/img/articles/art${aid}`);
         fs.mkdir(foldername, function(err) {
             if (err) {
@@ -47,13 +45,31 @@ var createFolder = async function (req, res, next) {
         }) 
     } catch (err) {
         console.log(err);
-        return res.redirect('/');
+        return res.sendStatus(500);
     }
 }
 
-var uploadFiles = multer({ storage: storage }).array("a-pictures", 10);
+var renameFolder = async function (old_p, new_p) {
+    try {
+        fs.rename(old_p, new_p, function(err) {
+            if (err) throw(err);
+            return 1;
+        })
+    } catch (err) {
+        console.log(err);
+        throw (err);
+    }
+}
+
+var del = async function () {
+    
+}
+
+var uploadFiles = multer({ storage: storage }).single("a-picture");
 var uploadFilesMiddleware = util.promisify(uploadFiles);
 module.exports = {
     mw_UploadFiles: uploadFilesMiddleware,
-    mw_CreateFolder: createFolder
+    mw_CreateFolder: createFolder,
+    mw_RenameFolder: renameFolder,
+    mw_Del: del
 }
