@@ -37,11 +37,15 @@
                 <input type="number" min="0" max="10000000" step="0.01" id="a-price" name="a-price" required>
                 <label for="a-description">Beschreibung: </label>
                 <textarea name="a-description" id="a-description" cols="50" rows="10"></textarea>
-                <button type="submit" id="new-submit">Online stellen</button>
+                <input type="checkbox" id="a-piccount" name="a-piccount" value="0" checked hidden>
+                <input type="checkbox" id="a-cat" name="a-cat" value="0" checked hidden>
+                <input type="checkbox" id="a-subcat" name="a-subcat" value="0" checked hidden>
+                <button type="button" id="new-submit" onclick="submit_new()">Anzeige einstellen</button>
             </form>
             <form method="POST" action="./pic" enctype="multipart/form-data" id="pic-form">
-                <label for="a-pictures">Bilder: </label>
-                <input type="file" id="a-pictures" multiple name="a-pictures">
+                <label for="a-picture">Bilder: </label>
+                <input type="file" id="a-picture" name="a-picture" accept="image/*">
+                <input type="checkbox" name="ctr" id="pctr" value="0" checked hidden>
                 <button type="submit" id="pic-submit">Hochladen</button>
             </form>
         </div>
@@ -60,23 +64,38 @@
             for (x = 0; x < spans.length; x++) {
                 if ($(spans[x]).prop('id').split('p').pop() == p_id) $(spans[x]).css('display', 'block');
             }
+            $('#a-cat').val(p_id);
+            $('#a-subcat').val(0);
+        }
+        else {
+            p_id = e_id.split('c').pop().split('p').shift();
+            $('#a-subcat').val(p_id);
         }
         $('#' + e_id).css('color', 'red');
     }
 
+    function submit_new () {
+        $('#a-piccount').val($('#pctr').val());
+        if ($('#a-cat').val() > 0) {
+            if ($('#a-subcat').val() == 0) $('#a-subcat').prop('checked', false);
+            $('#new-form').submit();
+        }
+    }
+
     $('#pic-form').on('submit', function (event) {
     event.preventDefault(); // Stop the form from causing a page refresh.
-    var data = {
-      username: $('#username').val(),
-      password: $('#password').val()
-    };
+    $('#pctr').val(parseInt($('#pctr').val()) + 1);
+    let form = $('#pic-form')[0];
+    let data = new FormData(form);
     $.ajax({
-      url: 'http://localhost/my/url',
+      url: window.location.href.replace('/new', '/pic'),
+      method: 'POST',
       data: data,
-      method: 'POST'
+      processData: false,
+      contentType: false,
+      cache: false
     }).then(function (response) {
-      // Do stuff with the response, like add it to the page dynamically.
-      $('body').append(response);
+      console.log(response);
     }).catch(function (err) {
       console.error(err);
     });

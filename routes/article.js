@@ -61,21 +61,38 @@ router.get('/new', isAuthenticated, async function (req, res) {
 })
 
 router.post('/pic', isAuthenticated, upload.mw_CreateFolder, async function (req, res) {
-    console.log("before");
     try {
         await upload.mw_UploadFiles(req, res);
     } catch (err) {
         console.log(err);
-        return res.redirect('/');
+        return res.sendStatus(500);
     }
-    console.log("after");
     return res.sendStatus(200);
 })
 
 
 router.post('/new', isAuthenticated, async function (req, res) {
-    console.log("new route");
-    return res.send("new route route");
+    let title = req.body['a-title'];
+    let descr = req.body['a-description'];
+    let price = req.body['a-price'];
+    let pic_count = req.body['a-piccount'];
+    let cat = req.body['a-cat'];
+    let sub_cat = req.body['a-subcat'] || 0;
+
+    try {
+        await ARTICLE.createArticle(title, descr, price, req.user.id);
+        let aid = await ARTICLE.getMaxIndex();
+        for (x = 0; x < pic_count; x++) {
+            await ARTPIC.link(aid, x);
+        }
+        await ARTCAT.link(aid, cat);
+        if (sub_cat > 0) await ARTCAT.link(aid, sub_cat);
+        await upload.mw_RenameFolder()
+        return res.redirect('/profile/' + req.user.name);
+    } catch (err) {
+        console.log(err);
+        return res.redirect('/');
+    }
 })
 
 

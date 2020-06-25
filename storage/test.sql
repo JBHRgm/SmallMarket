@@ -15,7 +15,8 @@ select * from category_table;
 select * from art_cat_table;
 select * from chat_table;
 select * from art_pic_table;
-
+delete from article_table where id = 10;
+select last_insert_id();
 SELECT @@global.time_zone;
 SET @@global.time_zone = '+02:00';
 
