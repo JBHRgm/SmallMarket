@@ -17,15 +17,15 @@
 </head>
 
 <body>
+  <form method="GET" id="searchform">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#"><div class="row pl-3"><img src="/static/img/logo.jpg" height ="35"><h3 class="pl-3">Small Market</h3></div></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+    
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      
-      <input class="form-control mr-sm-2 ml-lg-5" style="width: auto;" type="text" placeholder="Search" name="search" id="search" value="<%=locals.search%>">
+      <input class="form-control mr-sm-2 ml-lg-5" style="width: auto;" type="text" placeholder="..." name="search" id="search" value="<%=locals.search%>">
       <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" id="searchsubmit">Suchen</button> 
 
       <!-- Nav Item - Personal -->
@@ -33,7 +33,7 @@
         <a class="btn btn-link" type="button" id="userDropdown" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
             <span class="mr-2 d-none d-lg-inline text-secondary font-weight-bold small">
-              Personal
+              Persönlich
               <a class="btn btn-secondary btn-circle" data-toggle="dropdown">
                 <i class="fas fa-user text-white"></i>
               </a>
@@ -43,11 +43,11 @@
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
             <a class="dropdown-item" href="/profile">
                 <i class="fas fa-user fa-sm fa-fw mr-2"></i>
-                Profile
+                Profil
             </a>
             <a class="dropdown-item" href="/chat">
               <i class="fas fa-envelope fa-sm fa-fw mr-2"></i>
-                Messages
+                Nachrichten
             </a>
 
             <div class="dropdown-divider"></div>
@@ -63,7 +63,6 @@
       <div>
         <div class="card bg-secondary text-white m-3 p-3">
           <h2>Kategorien:</h2>
-          <form method="GET" id="searchform">
           <% for (x = 0; x < categories.length; x++) { %>
             <% if (categories[x]['parent'] == 0) { %>
               <% if (x > 0) { %>
@@ -113,7 +112,7 @@
         </div>
         <input type="hidden" name="page" id="page-input">
       </div>
-      <div style="margin-left: 20px;">
+      <div>
         <div>
             <div class="container rounded bg-light text-black m-3 p-3">
               <input class="mr-2 ml-4" type="radio" name="order" value="date-a" <% if (order == 'date-a') { %> checked <% } %>>Neueste zuerst
@@ -121,14 +120,14 @@
               <input class="mr-2 ml-4" type="radio" name="order" value="price-a" <% if (order == 'price-a') { %> checked <% } %>>Günstigste zuerst
               <input class="mr-2 ml-4" type="radio" name="order" value="price-d" <% if (order == 'price-d') { %> checked <% } %>>Teuerste zuerst
             </div>
-          </form>
           <input type="hidden" id ="ctr" value="<%=count%>">
           <p class="container rounded bg-light text-black m-3 p-3"><%=count%> Einträge gefunden</p>
         </div>
         <br>
         <div>
           <% for (x = 0; x < articles.length; x++) { %>
-            <div class="container rounded bg-dark text-white m-3 p-3" style="display: flex;" id="article<%=articles[x]['id']%>">
+            <a id="alink<%=articles[x]['id']%>" href="/article/<%=articles[x]['id']%>/<%=articles[x]['title']%>" hidden></a>
+            <div class="container rounded bg-dark text-white m-3 p-3" style="display: flex;" id="article<%=articles[x]['id']%>" onclick="clicked(this)">
               <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
                 <img class="rounded mr-3" src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" width="400px" height="300px">
               <% } else { %>
@@ -153,7 +152,7 @@
     </div>
     
     
-    
+  </form>
 </body>
 <script src="/static/js/jquery-3.3.1.min.js"></script>
 <script>
@@ -170,5 +169,11 @@
             document.getElementById('pages').appendChild(el);
         }
     })
+
+    function clicked (el) {
+      let aid = el.id.split('article').pop();
+      aid = '#alink' + aid;
+      $(aid)[0].click();
+    }
 </script>
 </html>
