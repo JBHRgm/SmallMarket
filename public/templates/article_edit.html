@@ -11,6 +11,16 @@
 
 </head>
 
+<style>
+    .pics {
+        position: relative;
+        max-height: 100%;
+        max-width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+</style>
+
 <body>
     <div style="display: flex;" id="categorywrapper">
         <div>
@@ -45,10 +55,13 @@
             <form method="POST" action="./pic" enctype="multipart/form-data" id="pic-form">
                 <label for="a-picture">Bilder: </label>
                 <input type="file" id="a-picture" name="a-picture" accept="image/*">
-                <input type="checkbox" name="ctr" id="pctr" value="0" checked hidden>
+                <input type="number" name="ctr" id="pctr" value="0" hidden>
                 <button type="submit" id="pic-submit">Hochladen</button>
             </form>
         </div>
+    </div>
+    <div style="display: flex;" id="imagewrapper">
+
     </div>
     
 </body>
@@ -82,23 +95,45 @@
         }
     }
 
+    function remove_picture (el) {
+        console.log(el.id);
+        console.log('a');
+    }
+
     $('#pic-form').on('submit', function (event) {
     event.preventDefault(); // Stop the form from causing a page refresh.
-    $('#pctr').val(parseInt($('#pctr').val()) + 1);
+    console.log($('#pctr').val());
     let form = $('#pic-form')[0];
     let data = new FormData(form);
-    $.ajax({
-      url: window.location.href.replace('/new', '/pic'),
-      method: 'POST',
-      data: data,
-      processData: false,
-      contentType: false,
-      cache: false
-    }).then(function (response) {
-      console.log(response);
-    }).catch(function (err) {
-      console.error(err);
-    });
+    if ($('#a-picture').val() != "") {
+        $.ajax({
+            url: window.location.href + '/pic',
+            method: 'POST',
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false
+        }).then(function (response) {
+            console.log(response);
+            let pc = $('#pctr').val();
+            $('#pctr').val(parseInt($('#pctr').val()) + 1);
+            let el = document.createElement('img');
+            el.src = `/static/img/articles/art${response['aid']}/art${response['aid']}pic${pc}.jpg`;
+            el.className = 'pics';
+            let div = document.createElement('div');
+            div.style.height = '300px';
+            div.style.width = '300px';
+            div.append(el);
+            el = document.createElement('button');
+            el.id = `art${response['aid']}pic${pc}`;
+            el.addEventListener('click', remove_picture(this));
+            el.textContent = 'X';
+            div.append(el);
+            $('#imagewrapper').append(div);
+        }).catch(function (err) {
+        console.error(err);
+        });
+    } 
   });
 </script>
 </html>

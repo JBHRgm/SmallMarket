@@ -60,14 +60,20 @@ router.get('/new', isAuthenticated, async function (req, res) {
     return res.render('article_edit.html', { cats: categories });
 })
 
-router.post('/pic', isAuthenticated, upload.mw_CreateFolder, async function (req, res) {
+router.post('/new/pic', isAuthenticated, upload.mw_CreateFolder, async function (req, res) {
     try {
+        var aid = await ARTICLE.getMaxIndex() + 1;
         await upload.mw_UploadFiles(req, res);
     } catch (err) {
         console.log(err);
         return res.sendStatus(500);
     }
-    return res.sendStatus(200);
+    return res.json({ aid: aid });
+})
+
+
+router.get('new/pic/rem', isAuthenticated, async function (req, res) {
+
 })
 
 
@@ -80,14 +86,13 @@ router.post('/new', isAuthenticated, async function (req, res) {
     let sub_cat = req.body['a-subcat'] || 0;
 
     try {
-        await ARTICLE.createArticle(title, descr, price, req.user.id);
-        let aid = await ARTICLE.getMaxIndex();
+        let aid = await ARTICLE.getMaxIndex() + 1;
+        await ARTICLE.createArticle(aid, title, descr, price, req.user.id);
         for (x = 0; x < pic_count; x++) {
             await ARTPIC.link(aid, x);
         }
         await ARTCAT.link(aid, cat);
         if (sub_cat > 0) await ARTCAT.link(aid, sub_cat);
-        await upload.mw_RenameFolder()
         return res.redirect('/profile/' + req.user.name);
     } catch (err) {
         console.log(err);

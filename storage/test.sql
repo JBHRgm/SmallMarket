@@ -16,20 +16,20 @@ select * from art_cat_table;
 select * from chat_table;
 select * from art_pic_table;
 delete from article_table where id = 10;
-select last_insert_id();
+
 SELECT @@global.time_zone;
 SET @@global.time_zone = '+02:00';
 
 INSERT INTO art_pic_table (article, ctr, picture) VALUES (1,0,'art1pic0.jpg'),(1,1,'art1pic1.jpg'),(1,2,'art1pic2.jpg'),(2,0,'art2pic0.jpg'),(2,1,'art2pic1.jpg');
 
-INSERT INTO article_table (title, description, price, owner) VALUES ('Grafikkarte AMD RX 570', 'Ganz neu mit OVP.', 99.99, 1);
-INSERT INTO article_table (title, description, price, owner) VALUES ('Autoreifen BMW-3er', 'Gummigeschmack', 45.50, 2);
-INSERT INTO article_table (title, description, price, owner) VALUES ('Grafikkarte NVIDIA GTX 980 Ti', 'Ganz neu mit OVP.', 110.99, 3);
-INSERT INTO article_table (title, description, price, owner) VALUES ('Waschmaschine Bosch MX-340', 'Wäscht wunderbar.', 149.99, 3);
-INSERT INTO article_table (title, description, price, owner) VALUES ('Alte Brettspiele (Mensch Ärgere dich nicht, Mühle, ...)', 'Gebaucht aber noch gut in Schuss.', 25.00, 4);
-INSERT INTO article_table (title, description, price, owner) VALUES ('Herrenhemd S.Oliver M kariert', 'Riecht wie schon mal getragen.', 30.00, 7);
-INSERT INTO article_table (title, description, price, owner) VALUES ('Tischdecke kariert', 'Nur paar Flecken.', 23.99, 1);
-INSERT INTO article_table (title, description, price, owner) VALUES ('Großer Luftballon', 'Da geht dir die Puste aus.', 10.00, 3);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (1,'Grafikkarte AMD RX 570', 'Ganz neu mit OVP.', 99.99, 1);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (2,'Autoreifen BMW-3er', 'Gummigeschmack', 45.50, 2);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (3,'Grafikkarte NVIDIA GTX 980 Ti', 'Ganz neu mit OVP.', 110.99, 3);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (4,'Waschmaschine Bosch MX-340', 'Wäscht wunderbar.', 149.99, 3);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (5,'Alte Brettspiele (Mensch Ärgere dich nicht, Mühle, ...)', 'Gebaucht aber noch gut in Schuss.', 25.00, 4);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (6,'Herrenhemd S.Oliver M kariert', 'Riecht wie schon mal getragen.', 30.00, 7);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (7,'Tischdecke kariert', 'Nur paar Flecken.', 23.99, 1);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (8,'Großer Luftballon', 'Da geht dir die Puste aus.', 10.00, 3);
 
 INSERT INTO art_cat_table (article, category) VALUES (1,10), (1,18),(2,1),(2,2),(3,10),(3,18),(4,10),(4,13),(5,22),(5,24),(5,26),(6,56),(6,59),(7,47),(7,50),(8,22),(8,25);
 

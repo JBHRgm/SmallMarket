@@ -22,7 +22,7 @@ module.exports.TBNAME = TBNAME;
 module.exports.createTable = async function () {
     return new Promise (async (res, rej) => {
         let sql = `CREATE TABLE IF NOT EXISTS ${TBNAME} (`
-                + `${COLS[0]} INT NOT NULL AUTO_INCREMENT PRIMARY KEY, `
+                + `${COLS[0]} INT NOT NULL PRIMARY KEY, `
                 + `${COLS[1]} DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, `
                 + `${COLS[2]} VARCHAR(250) NOT NULL, `
                 + `${COLS[3]} TEXT NOT NULL, `
@@ -43,8 +43,8 @@ module.exports.createTable = async function () {
 }
 
 
-module.exports.createArticle = async function (title, descr, price, owner) {
-    let sql = `INSERT INTO ${TBNAME} (${COLS[2]},${COLS[3]},${COLS[4]},${COLS[5]}) VALUES ('${title}','${descr}','${price}','${owner}');`;
+module.exports.createArticle = async function (aid, title, descr, price, owner) {
+    let sql = `INSERT INTO ${TBNAME} (${COLS[0]}, ${COLS[2]},${COLS[3]},${COLS[4]},${COLS[5]}) VALUES ('${aid}','${title}','${descr}','${price}','${owner}');`;
     try {
         await query(sql);
         return 1;
