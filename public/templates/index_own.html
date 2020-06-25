@@ -8,89 +8,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <title>SmallMarket</title>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.2/cjs/popper.min.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link href="  https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/static/styles/styles.css">
 </head>
 
 <body>
-    <h1>Homepage</h1>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"><div class="row pl-3"><img src="/static/img/logo.jpg" height ="35"><h3 class="pl-3">Small Market</h3></div></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      
+      <input class="form-control mr-sm-2 ml-lg-5" style="width: auto;" type="text" placeholder="Search" name="search" id="search" value="<%=locals.search%>">
+      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" id="searchsubmit">Suchen</button> 
+
+      <!-- Nav Item - Personal -->
+      <div class="nav-item dropdown ml-auto">
+        <a class="btn btn-link" type="button" id="userDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <span class="mr-2 d-none d-lg-inline text-secondary font-weight-bold small">
+              Personal
+              <a class="btn btn-secondary btn-circle" data-toggle="dropdown">
+                <i class="fas fa-user text-white"></i>
+              </a>
+            </span>
+          </a>
+        <!-- Dropdown - User Information -->
+        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+            <a class="dropdown-item" href="/profile">
+                <i class="fas fa-user fa-sm fa-fw mr-2"></i>
+                Profile
+            </a>
+            <a class="dropdown-item" href="/chat">
+              <i class="fas fa-envelope fa-sm fa-fw mr-2"></i>
+                Messages
+            </a>
+
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/logout">
+                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
+                Logout
+            </a>
+        </div>
+      </div>
+    </div>
+  </nav>
     <div style="display: flex;" id="bodywrapper">
       <div>
-        <h2>Kategorien:</h2>
-        <form method="GET" id="searchform">
-        <% for (x = 0; x < categories.length; x++) { %>
-          <% if (categories[x]['parent'] == 0) { %>
-            <% if (x > 0) { %>
-            </ul>
+        <div class="card bg-secondary text-white m-3 p-3">
+          <h2>Kategorien:</h2>
+          <form method="GET" id="searchform">
+          <% for (x = 0; x < categories.length; x++) { %>
+            <% if (categories[x]['parent'] == 0) { %>
+              <% if (x > 0) { %>
+              </ul></div>
+              <% } %>
+              <div class="card bg-dark m-3 p-3">
+              <h3><%=categories[x]['name']%> (<%=categories[x]['count']%>)
+                <% if (cat.includes(categories[x]['id'].toString())) { %>
+                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked>
+                <% } else { %>
+                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
+                <% } %>
+              </h3>
+              <ul>
+            <% } else { %>
+              <li><%=categories[x]['name']%> (<%=categories[x]['count']%>)
+                <% if (cat.includes(categories[x]['id'].toString())) { %>
+                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked>
+                <% } else { %>
+                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
+                <% } %>
+              </li>
             <% } %>
-            <h3><%=categories[x]['name']%> (<%=categories[x]['count']%>)
-              <% if (cat.includes(categories[x]['id'].toString())) { %>
-              <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked>
-              <% } else { %>
-              <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
-              <% } %>
-            </h3>
-            <ul>
-          <% } else { %>
-            <li><%=categories[x]['name']%> (<%=categories[x]['count']%>)
-              <% if (cat.includes(categories[x]['id'].toString())) { %>
-              <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked>
-              <% } else { %>
-              <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
-              <% } %>
-            </li>
+            <% if (x == categories.length - 1) { %> </ul></div> <% } %>
           <% } %>
-          <% if (x == categories.length - 1) { %> </ul> <% } %>
-        <% } %>
+          </div>
+          <div class="card bg-secondary text-white m-3 p-3">
         <h2>Preis:</h2>
-        <div style="display: inline-block;">
-          <input type="number" name="pl" id="pl" min="0" max="9999999" value="<%=price[0]%>">
-          <input type="number" name="ph" id="ph" min="1" max="10000000" value="<%=price[1]%>">
+          <div style="display: inline-block;">
+            <input type="number" name="pl" id="pl" min="0" max="9999999" value="<%=price[0]%>">
+            <input type="number" name="ph" id="ph" min="1" max="10000000" value="<%=price[1]%>">
+          </div>
         </div>
+        <div class="card bg-secondary text-white m-3 p-3">
         <h2>Ergebnisse in:</h2>
         <ul>
-          <% for (x = 0; x < locations.length; x++) { %>
-            <li><%=locations[x]['address']%> (<%=locations[x]['count']%>)
-              <% if (loc.includes(locations[x]['address'])) { %>
-              <input type="checkbox" value="<%=locations[x]['address']%>" name="loc" checked>
-              <% } else { %>
-              <input type="checkbox" value="<%=locations[x]['address']%>" name="loc">
-              <% } %>
-            </li>
-          <% } %>
-        </ul>
+            <% for (x = 0; x < locations.length; x++) { %>
+              <li><%=locations[x]['address']%> (<%=locations[x]['count']%>)
+                <% if (loc.includes(locations[x]['address'])) { %>
+                <input type="checkbox" value="<%=locations[x]['address']%>" name="loc" checked>
+                <% } else { %>
+                <input type="checkbox" value="<%=locations[x]['address']%>" name="loc">
+                <% } %>
+              </li>
+            <% } %>
+          </ul>
+        </div>
         <input type="hidden" name="page" id="page-input">
       </div>
       <div style="margin-left: 20px;">
         <div>
-            <input type="text" name="search" id="search" value="<%=locals.search%>">
-            <input type="radio" name="order" value="date-a" <% if (order == 'date-a') { %> checked <% } %>>Neueste zuerst
-            <input type="radio" name="order" value="date-d" <% if (order == 'date-d') { %> checked <% } %>>Älteste zuerst
-            <input type="radio" name="order" value="price-a" <% if (order == 'price-a') { %> checked <% } %>>Günstigste zuerst
-            <input type="radio" name="order" value="price-d" <% if (order == 'price-d') { %> checked <% } %>>Teuerste zuerst
-            <button type="submit" id="searchsubmit">Suchen</button> 
+            <div class="container rounded bg-light text-black m-3 p-3">
+              <input class="mr-2 ml-4" type="radio" name="order" value="date-a" <% if (order == 'date-a') { %> checked <% } %>>Neueste zuerst
+              <input class="mr-2 ml-4" type="radio" name="order" value="date-d" <% if (order == 'date-d') { %> checked <% } %>>Älteste zuerst
+              <input class="mr-2 ml-4" type="radio" name="order" value="price-a" <% if (order == 'price-a') { %> checked <% } %>>Günstigste zuerst
+              <input class="mr-2 ml-4" type="radio" name="order" value="price-d" <% if (order == 'price-d') { %> checked <% } %>>Teuerste zuerst
+            </div>
           </form>
           <input type="hidden" id ="ctr" value="<%=count%>">
-          <p><%=count%> Einträge gefunden</p>
+          <p class="container rounded bg-light text-black m-3 p-3"><%=count%> Einträge gefunden</p>
         </div>
         <br>
         <div>
           <% for (x = 0; x < articles.length; x++) { %>
-            <div style="display: flex; justify-content: space-around;" id="article<%=articles[x]['id']%>">
+            <div class="container rounded bg-dark text-white m-3 p-3" style="display: flex;" id="article<%=articles[x]['id']%>">
               <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
-                <img src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" width="400px" height="300px">
+                <img class="rounded mr-3" src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" width="400px" height="300px">
               <% } else { %>
-                <img src="/static/img/articles/no-image-found.png" width="400px" height="300px">
+                <img class="rounded mr-3" src="/static/img/articles/no-image-found.png" width="400px" height="300px">
               <% } %>
-              <div>
-                <h3><%=articles[x]['title']%></h3>
+              <div class="p-3">
+                <h3><%=articles[x]['title']%></h3>                
                 <p><%=articles[x]['description']%></p>
-                <%=articles[x]['created']%>
-              </div>
-              <div>
-                <p><%=articles[x]['name']%></p>
+                <p>Erstellt von <%=articles[x]['name']%></p>
+                <p><%=articles[x]['created']%></p>
                 <p><%=articles[x]['address']%></p>
                 <p style="color: red; font-size: medium;"><%=articles[x]['price'].toFixed(2)%> €</p>
-              </div>
+              </div>    
+                     
             </div>
           <% } %>
         </div>
