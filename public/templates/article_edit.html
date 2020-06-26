@@ -1,141 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-<head>
+        <title>SmallMarket</title>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
 
-  <title>SmallMarket</title>
+    <style>
+        .pics {
+            position: relative;
+            max-height: 100%;
+            max-width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-</head>
-
-<style>
-    .pics {
-        position: relative;
-        max-height: 100%;
-        max-width: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-</style>
-
-<body>
-    <div style="display: flex;" id="categorywrapper">
-        <div>
-            <% for (x = 0; x < cats.length; x++) { %>
-                <% if (cats[x]['parent'] == 0) { %>
+    <body>
+        <div style="display: flex;" id="categorywrapper">
+            <div>
+                <% for (x = 0; x < cats.length; x++) { %> <% if (cats[x]['parent'] == 0) { %>
                 <span style="display: block;" id="c<%=cats[x]['id']%>" onclick="select_cat(this.id)"><%=cats[x]['name']%></span>
-                <% } %>
-            <% } %>
-        </div>
-        <div>
-            <% for (x = 0; x < cats.length; x++) { %>
-                <% if (cats[x]['parent'] > 0) { %>
+                <% } %> <% } %>
+            </div>
+            <div>
+                <% for (x = 0; x < cats.length; x++) { %> <% if (cats[x]['parent'] > 0) { %>
                 <span style="display: none;" id="c<%=cats[x]['id']%>p<%=cats[x]['parent']%>" onclick="select_cat(this.id)"><%=cats[x]['name']%></span>
-                <% } %>
-            <% } %>
+                <% } %> <% } %>
+            </div>
         </div>
-    </div>
-    <div style="display: flex;" id="bodywrapper">
-        <div>
-            <form method="POST" id="new-form">
-                <label for="a-title">Titel: </label>
-                <input type="text" minlength="5" maxlength="250" id="a-title" name="a-title" required>
-                <label for="a-price">Preis: </label>
-                <input type="number" min="0" max="10000000" step="0.01" id="a-price" name="a-price" required>
-                <label for="a-description">Beschreibung: </label>
-                <textarea name="a-description" id="a-description" cols="50" rows="10"></textarea>
-                <input type="checkbox" id="a-piccount" name="a-piccount" value="0" checked hidden>
-                <input type="checkbox" id="a-cat" name="a-cat" value="0" checked hidden>
-                <input type="checkbox" id="a-subcat" name="a-subcat" value="0" checked hidden>
-                <button type="button" id="new-submit" onclick="submit_new()">Anzeige einstellen</button>
-            </form>
-            <form method="POST" action="./pic" enctype="multipart/form-data" id="pic-form">
-                <label for="a-picture">Bilder: </label>
-                <input type="file" id="a-picture" name="a-picture" accept="image/*">
-                <input type="number" name="ctr" id="pctr" value="0" hidden>
-                <button type="submit" id="pic-submit">Hochladen</button>
-            </form>
+        <div style="display: flex;" id="bodywrapper">
+            <div>
+                <form method="POST" id="new-form">
+                    <label for="a-title">Titel: </label>
+                    <input type="text" minlength="5" maxlength="250" id="a-title" name="a-title" required />
+                    <label for="a-price">Preis: </label>
+                    <input type="number" min="0" max="10000000" step="0.01" id="a-price" name="a-price" required />
+                    <label for="a-description">Beschreibung: </label>
+                    <textarea name="a-description" id="a-description" cols="50" rows="10"></textarea>
+                    <input type="checkbox" id="a-piccount" name="a-piccount" value="0" checked hidden />
+                    <input type="checkbox" id="a-cat" name="a-cat" value="0" checked hidden />
+                    <input type="checkbox" id="a-subcat" name="a-subcat" value="0" checked hidden />
+                    <button type="button" id="new-submit" onclick="submit_new()">Anzeige einstellen</button>
+                </form>
+                <form method="POST" action="./pic" enctype="multipart/form-data" id="pic-form">
+                    <label for="a-picture">Bilder: </label>
+                    <input type="file" id="a-picture" name="a-picture" accept="image/*" />
+                    <input type="number" name="ctr" id="pctr" value="0" hidden />
+                    <button type="submit" id="pic-submit">Hochladen</button>
+                </form>
+            </div>
         </div>
-    </div>
-    <div style="display: flex;" id="imagewrapper">
+        <div style="display: flex;" id="imagewrapper"></div>
+    </body>
 
-    </div>
-    
-</body>
-
-<script>
-    function select_cat (e_id) {
-        let p_id = e_id.split('c').pop();
-        let spans = $('#categorywrapper div:nth-child(2) span');
-        $(spans).css('color', 'black');
-        if (e_id.search('p') <= 0) {        // category has no parent category, display sub-categories
-            $(spans).css('display', 'none');
-            $('#categorywrapper div span').css('color', 'black');
-            for (x = 0; x < spans.length; x++) {
-                if ($(spans[x]).prop('id').split('p').pop() == p_id) $(spans[x]).css('display', 'block');
+    <script>
+        function select_cat(e_id) {
+            let p_id = e_id.split('c').pop();
+            let spans = $('#categorywrapper div:nth-child(2) span');
+            $(spans).css('color', 'black');
+            if (e_id.search('p') <= 0) {
+                // category has no parent category, display sub-categories
+                $(spans).css('display', 'none');
+                $('#categorywrapper div span').css('color', 'black');
+                for (x = 0; x < spans.length; x++) {
+                    if ($(spans[x]).prop('id').split('p').pop() == p_id) $(spans[x]).css('display', 'block');
+                }
+                $('#a-cat').val(p_id);
+                $('#a-subcat').val(0);
+            } else {
+                p_id = e_id.split('c').pop().split('p').shift();
+                $('#a-subcat').val(p_id);
             }
-            $('#a-cat').val(p_id);
-            $('#a-subcat').val(0);
+            $('#' + e_id).css('color', 'red');
         }
-        else {
-            p_id = e_id.split('c').pop().split('p').shift();
-            $('#a-subcat').val(p_id);
+
+        function submit_new() {
+            $('#a-piccount').val($('#pctr').val());
+            if ($('#a-cat').val() > 0) {
+                if ($('#a-subcat').val() == 0) $('#a-subcat').prop('checked', false);
+                $('#new-form').submit();
+            }
         }
-        $('#' + e_id).css('color', 'red');
-    }
 
-    function submit_new () {
-        $('#a-piccount').val($('#pctr').val());
-        if ($('#a-cat').val() > 0) {
-            if ($('#a-subcat').val() == 0) $('#a-subcat').prop('checked', false);
-            $('#new-form').submit();
+        function remove_picture(el) {
+            console.log(el.id);
+            console.log('a');
         }
-    }
 
-    function remove_picture (el) {
-        console.log(el.id);
-        console.log('a');
-    }
-
-    $('#pic-form').on('submit', function (event) {
-    event.preventDefault(); // Stop the form from causing a page refresh.
-    console.log($('#pctr').val());
-    let form = $('#pic-form')[0];
-    let data = new FormData(form);
-    if ($('#a-picture').val() != "") {
-        $.ajax({
-            url: window.location.href + '/pic',
-            method: 'POST',
-            data: data,
-            processData: false,
-            contentType: false,
-            cache: false
-        }).then(function (response) {
-            console.log(response);
-            let pc = $('#pctr').val();
-            $('#pctr').val(parseInt($('#pctr').val()) + 1);
-            let el = document.createElement('img');
-            el.src = `/static/img/articles/art${response['aid']}/art${response['aid']}pic${pc}.jpg`;
-            el.className = 'pics';
-            let div = document.createElement('div');
-            div.style.height = '300px';
-            div.style.width = '300px';
-            div.append(el);
-            el = document.createElement('button');
-            el.id = `art${response['aid']}pic${pc}`;
-            el.onclick = 'remove_picture(this)';
-            el.textContent = 'X';
-            div.append(el);
-            $('#imagewrapper').append(div);
-        }).catch(function (err) {
-        console.error(err);
+        $('#pic-form').on('submit', function (event) {
+            event.preventDefault(); // Stop the form from causing a page refresh.
+            console.log($('#pctr').val());
+            let form = $('#pic-form')[0];
+            let data = new FormData(form);
+            if ($('#a-picture').val() != '') {
+                $.ajax({
+                    url: window.location.href + '/pic',
+                    method: 'POST',
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                })
+                    .then(function (response) {
+                        console.log(response);
+                        let pc = $('#pctr').val();
+                        $('#pctr').val(parseInt($('#pctr').val()) + 1);
+                        let el = document.createElement('img');
+                        el.src = `/static/img/articles/art${response['aid']}/art${response['aid']}pic${pc}.jpg`;
+                        el.className = 'pics';
+                        let div = document.createElement('div');
+                        div.style.height = '300px';
+                        div.style.width = '300px';
+                        div.append(el);
+                        el = document.createElement('button');
+                        el.id = `art${response['aid']}pic${pc}`;
+                        el.onclick = 'remove_picture(this)';
+                        el.textContent = 'X';
+                        div.append(el);
+                        $('#imagewrapper').append(div);
+                    })
+                    .catch(function (err) {
+                        console.error(err);
+                    });
+            }
         });
-    } 
-  });
-</script>
+    </script>
 </html>

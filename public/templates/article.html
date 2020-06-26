@@ -77,12 +77,13 @@
         </nav>
     </form>
 
-    <div style="display: flex; flex-wrap: wrap;">
-        <div class="row rounded bg-light text-black m-3 p-3">
-            <p class="h3"><%=article['title']%></p>
+    <div class="container">
+        <div class="row rounded bg-secondary text-white m-3 p-3">
+            <p class="h3 col-9"><%=article['title']%></p>
+            <button class="btn btn-primary">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
         </div>
-        <div class="row m-3">
-            <div class="col-5 rounded bg-light m-3 p-1">
+        <div class="container">
+            <div class="rounded bg-secondary p-1">
                 <div class="cont" id="picwrapper">
                     <% if (pictures.length > 0) { %>
                         <% for (x = 0; x < pictures.length; x++) { %>
@@ -96,18 +97,27 @@
                     </div>
                 </div>
             </div>
-            <div class="col-7">
-                <div>
-                    <p><%=article['description']%></p>
-                <span><%=article['price']%> €</span>
-                <span><%=article['created']%></span>
-                </div>
-                <div>
-                    <p><%=owner['name']%></p>
-                <p><%=owner['mail']%></p>
-                <p><%=owner['address']%></p>
-                <p><%=owner['registered']%></p>
-                </div>
+            <div class="row rounded bg-secondary text-white p-3 m-3">
+              <div class="col-5 rounded bg-dark">
+                <h3 class="pt-2">Nutzer:</h3>
+                <hr>
+                <p>Erstellt von: <%=owner['name']%></p>
+                <p>Mail: <%=owner['mail']%></p>
+                <p>Wohnort: <%=owner['address']%></p>
+                <p>Nutzer registriert seit: <%=owner['registered']%></p>
+              </div>
+              <div class="col-7">
+                  <p class="text-white float-right display-1"><%=article['price']%> €</p>
+
+              </div>
+              <button class="btn btn-primary m-3">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
+              <p style="margin-left: auto; margin-top: auto;">Erstellt am: <%=article['created']%></p>
+
+            </div>
+            <div class="rounded bg-secondary text-white p-3 m-3">
+              <h3>Beschreibung</h3>
+              <hr>
+              <p><%=article['description']%></p>
             </div>
         </div>
         

@@ -4,7 +4,7 @@
 
 .filter-hover:hover {
     cursor: pointer;
-    background-color: rgba(10,10,10,0.8);
+    background-color: rgba(10, 10, 10, 0.8);
 }
 
 .article-card:hover {
@@ -19,7 +19,7 @@
     transform: translateY(-50%);
 }
 
-.picwrapper {
-    height: 270px;
+#picwrapper {
+    /* height: 500px; */
     text-align: center;
 }
