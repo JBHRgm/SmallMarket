@@ -9,108 +9,109 @@
 
   <title>SmallMarket</title>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/article_view.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+  <link href="/static/styles/article_view.css" rel="stylesheet">
+
 </head>
 
-<style>
-    .bg-pic {
-        filter: blur(8px);
-        -webkit-filter: blur(8px);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size:;
-    }
-
-    .pics {
-        display: none;
-        position: relative;
-        max-height: 100%;
-        max-width: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .pic-button {
-        position: absolute;
-        top: 50%;
-        transform: translate(0%,-50%);
-        border: none;
-        display: inline-block;
-        padding: 8px 16px;
-        vertical-align: middle;
-        overflow: hidden;
-        text-decoration: none;
-        text-align: center;
-        cursor: pointer;
-        background-color: transparent;
-        outline: none;
-    }
-
-    .pic-button:hover {
-        color: white;
-        border-color: white;
-        background-color: rgba(0,0,0,0.5);
-    }
-
-    .cont {
-        margin-left: auto; 
-        margin-right: auto; 
-        width: 300px; 
-        height: 250px;
-        position: relative;
-        box-sizing: border-box;
-        white-space: nowrap;
-        padding: 5px;
-        border: 1px solid grey;
-        text-align: center;
-        background-color: rgba(0, 0, 0, 0.8);
-    }
-</style>
-
 <body>
-    <h2><%=article['title']%></h2>
-    <div style="display: flex;" id="bodywrapper">
-        <div>
-            <div class="cont" id="picwrapper">
-            <% if (pictures.length > 0) { %>
-            <% for (x = 0; x < pictures.length; x++) { %>
-                <img src="/static/img/articles/art<%=article['id']%>/<%=pictures[x]['picture']%>" class="pics">
-            <% } %>
-                <button class="pic-button" onclick="slide(-1)" style="left: 0%;">&#10094;</button>
-                <button class="pic-button" onclick="slide(1)" style="right: 0%;">&#10095;</button>
-            <% } else { %>
-                <img width="300px" height="230px" src="/static/img/articles/no-image-found.png">
-            <% } %>
+    <form method="GET" action="/" id="searchform">
+        <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+          <a class="navbar-brand" href="#"><div class="row pl-3"><img src="/static/img/logo.jpg" height ="35"><h4 class="pl-3">Small Market</h4></div></a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="form-inline">
+              <input class="form-control mr-2 ml-md-5" type="text" placeholder="..." name="search" id="search" value="<%=locals.search%>">
+              <button class="btn btn-outline-primary" type="submit" id="searchsubmit">Suchen</button> 
             </div>
-            <p><%=article['description']%></p>
-            <span><%=article['price']%> €</span>
-            <span><%=article['created']%></span>
+            
+      
+            <!-- Nav Item - Personal -->
+            <div class="nav-item dropdown ml-auto mt-2 mt-md-0">
+              <a class="btn btn-link" type="button" id="userDropdown" role="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <span class="mr-2 d-none d-inline text-secondary font-weight-bold small">
+                    Persönlich
+                    <a class="btn btn-secondary btn-circle" data-toggle="dropdown">
+                      <i class="fas fa-user text-white"></i>
+                    </a>
+                  </span>
+                </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                  <% if (user && user.name) { %>
+                    <a class="dropdown-item" href="/profile/<%=user.name%>">
+                  <% } else { %>
+                    <a class="dropdown-item" href="/login">
+                  <% } %>
+                      <i class="fas fa-user fa-sm fa-fw mr-2"></i>
+                      Profil
+                  </a>
+                  <a class="dropdown-item" href="/chat">
+                    <i class="fas fa-envelope fa-sm fa-fw mr-2"></i>
+                      Nachrichten
+                  </a>
+      
+                  <div class="dropdown-divider"></div>
+                  <% if (user && user.id) { %>
+                    <a class="dropdown-item" href="/logout">
+                      <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
+                      Logout
+                    </a>
+                  <% } else { %>
+                    <a class="dropdown-item" href="/login">
+                      <i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i>
+                      Login
+                    </a>
+                  <% } %>
+              </div>
+            </div>
+          </div>
+        </nav>
+    </form>
+
+    <div style="display: flex; flex-wrap: wrap;">
+        <div class="row rounded bg-light text-black m-3 p-3">
+            <p class="h3"><%=article['title']%></p>
         </div>
-        <div>
-            <p><%=owner['name']%></p>
-            <p><%=owner['mail']%></p>
-            <p><%=owner['address']%></p>
-            <p><%=owner['registered']%></p>
+        <div class="row m-3">
+            <div class="col-5 rounded bg-light m-3 p-1">
+                <div class="cont" id="picwrapper">
+                    <% if (pictures.length > 0) { %>
+                        <% for (x = 0; x < pictures.length; x++) { %>
+                            <img src="/static/img/articles/art<%=article['id']%>/<%=pictures[x]['picture']%>" class="pics">
+                        <% } %>
+                        <button class="pic-button" onclick="slide(-1)" style="left: 0%;">&#10094;</button>
+                        <button class="pic-button" onclick="slide(1)" style="right: 0%;">&#10095;</button>
+                     <% } else { %>
+                        <img width="300px" height="230px" src="/static/img/articles/no-image-found.png">
+                    <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="col-7">
+                <div>
+                    <p><%=article['description']%></p>
+                <span><%=article['price']%> €</span>
+                <span><%=article['created']%></span>
+                </div>
+                <div>
+                    <p><%=owner['name']%></p>
+                <p><%=owner['mail']%></p>
+                <p><%=owner['address']%></p>
+                <p><%=owner['registered']%></p>
+                </div>
+            </div>
         </div>
+        
     </div>
     
 </body>
-<script>
-    var slideIndex = 1;
-    showDivs(slideIndex);
-    
-    function slide(n) {
-      showDivs(slideIndex += n);
-    }
-    
-    function showDivs(n) {
-      var i;
-      var x = document.getElementsByClassName("pics");
-      if (n > x.length) {slideIndex = 1}
-      if (n < 1) {slideIndex = x.length}
-      for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";  
-      }
-      x[slideIndex-1].style.display = "inline-block";  
-    }
-    </script>
 </html>

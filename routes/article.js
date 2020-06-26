@@ -31,6 +31,7 @@ router.get('/:id/:name', async function (req, res, next) {
     let a_name = req.params.name == '' ? 0:req.params.name;
 
     a_id = parseInt(a_id);
+    let user = req.user || {};
 
     if (!a_id || !a_name) return next();
     
@@ -46,18 +47,19 @@ router.get('/:id/:name', async function (req, res, next) {
         return res.redirect('/');
     }
 
-    return res.render('article.html', { article: article, owner: owner, pictures: pictures });
+    return res.render('article.html', { article: article, owner: owner, pictures: pictures , user: { id: user.id, name: user.name }});
 });
 
 
 router.get('/new', isAuthenticated, async function (req, res) {
+    let user = req.user || {};
     try {
         var categories = await CATEGORY.getAllCategories();
     } catch (err) {
         console.log(err);
         return res.redirect('/');
     }
-    return res.render('article_edit.html', { cats: categories });
+    return res.render('article_edit.html', { cats: categories , user: { id: user.id, name: user.name }});
 })
 
 router.post('/new/pic', isAuthenticated, upload.mw_CreateFolder, async function (req, res) {
