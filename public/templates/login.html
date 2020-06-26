@@ -7,23 +7,40 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>SmallMarket - Login</title>
+  <title>SmallMarket</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles/auth.css">
 
 </head>
 
 <body>
-    <h2>Login</h2>
-    <form action="/login" id="login-form" name="login-form" method="POST" enctype="application/x-www-form-urlencoded">
-        <input type="email" id="usermail" name="usermail" placeholder="Email" required>
-        <input type="password" id="userpassword" name="userpassword" placeholder="Passwort" required>
-        <button type="submit" id="login-submit">Login</button>
-    </form>
-    <br>
-    <div>
-      <% for (key in flashes) { %>
-        <span><%=key%>: <%=flashes[key]%></span>
-      <% } %>
-    </div>
+  <div id="logreg-forms">
+    <form name="login-form" method="POST" enctype="application/x-www-form-urlencoded">
+        <h4 style="text-align: center;" class="mb-3"> LOGIN  </h4>
+        <% if (flashes.error) { %>
+            <div class="alert alert-danger alert-dismissible fade show py-2 pl-3 mt-2" role="alert" style="line-height: normal;">
+                <span><%= flashes.error %></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="padding: 0.3rem 1.25rem;">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+        <% } %>
+        <input type="email" id="usermail" name="usermail" class="form-control" placeholder="Email" required autofocus>
+        <input type="password" id="userpassword" name="userpassword" class="form-control mt-1" placeholder="Passwort" required>
+        
+        <button class="btn btn-success btn-block mt-2" type="submit"><i class="fa fa-sign-in"></i> Login</button>
+        <hr>
+        <!-- <p>Don't have an account!</p>  -->
+        <a class="btn btn-primary" id="btn-register" href="./register">
+            <i class="fas fa-user-plus"></i> Neuen Account registrieren!
+        </a>
+        
+    </form> 
+  </div>
 </body>
 
 </html>

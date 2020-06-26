@@ -9,6 +9,8 @@
 
   <title>SmallMarket</title>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </head>
 
 <body>
@@ -47,11 +49,11 @@
     </p>
     
 </body>
-<script src="/static/js/jquery-3.3.1.min.js"></script>
+
 <script>
     $(() => {
         let ctr = $('#ctr').val();
-        for (x = 0; x < ctr/5; x++) {
+        for (x = 0; x < ctr/10; x++) {
             let el = document.createElement('a');
             el.href = window.location.href.replace(/\/\?page=[0-9]+/, '') + '/?page=' + x;
             el.text = (x + 1).toString();

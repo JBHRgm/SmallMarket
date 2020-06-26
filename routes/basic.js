@@ -14,6 +14,8 @@ router.get('/', async function (req, res) {
     let price = [req.query['pl'], req.query['ph']];
     let count = 0;
 
+    let user = req.user || {};
+
     if (typeof loc == 'string') loc = [loc];
     if (typeof cat == 'string') cat = [cat];
     if (!parseInt(price[0])) price[0] = 0;
@@ -39,7 +41,7 @@ router.get('/', async function (req, res) {
     res.locals.price = price;
     //console.log(res.locals);
 
-    return res.render('index_own.html', { categories: categories, locations: locations, articles: articles });
+    return res.render('index_own.html', { categories: categories, locations: locations, articles: articles, user: {id: user.id, name: user.name } });
 });
 
 

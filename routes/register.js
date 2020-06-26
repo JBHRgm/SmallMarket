@@ -48,7 +48,7 @@ const validate = async function (req, res, next) {
                 ok_flag = false;
             }
             else if (await USER.checkUsername(name)) {
-                req.flash('username_taken', 'Der Benutzername ' + name + ' ist leider schon vergeben.'); 
+                req.flash('username', 'Der Benutzername ' + name + ' ist leider schon vergeben.'); 
                 ok_flag = false;
             }
         }
@@ -67,7 +67,7 @@ const validate = async function (req, res, next) {
                     if (cities[ctr] == city) cfl = true;
                 }
                 if(!cfl) {
-                    req.flash('city', 'Diese Stadt ist nicht zugehörig zu der angegebenen Postleitzahl!');
+                    req.flash('city', 'Die Stadt "' + city + '" ist nicht zugehörig zu der angegebenen Postleitzahl ' + plz + ' !');
                     ok_flag = false;
                 }
             }
@@ -85,7 +85,7 @@ const validate = async function (req, res, next) {
             else {
                 let taken = await USER.checkMail(mail);
                 if(taken) {
-                    req.flash('mail_taken', 'Die Mail "' + mail + '" ist leider schon vergeben.');
+                    req.flash('mail', 'Die Mail "' + mail + '" ist leider schon vergeben.');
                     ok_flag = false;
                 }
             }

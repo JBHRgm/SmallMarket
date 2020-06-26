@@ -15,14 +15,15 @@ select * from category_table;
 select * from art_cat_table;
 select * from chat_table;
 select * from art_pic_table;
-delete from article_table where id = 10;
+
+delete from user_table where id = 9;
 
 SELECT @@global.time_zone;
 SET @@global.time_zone = '+02:00';
 
 INSERT INTO art_pic_table (article, ctr, picture) VALUES (1,0,'art1pic0.jpg'),(1,1,'art1pic1.jpg'),(1,2,'art1pic2.jpg'),(2,0,'art2pic0.jpg'),(2,1,'art2pic1.jpg');
 
-INSERT INTO article_table (id, title, description, price, owner) VALUES (1,'Grafikkarte AMD RX 570', 'Ganz neu mit OVP.', 99.99, 1);
+INSERT INTO article_table (id, title, description, price, owner) VALUES (11,'Grafikkarte AMD RX 570', 'Ganz neu mit OVP.', 99.99, 1);
 INSERT INTO article_table (id, title, description, price, owner) VALUES (2,'Autoreifen BMW-3er', 'Gummigeschmack', 45.50, 2);
 INSERT INTO article_table (id, title, description, price, owner) VALUES (3,'Grafikkarte NVIDIA GTX 980 Ti', 'Ganz neu mit OVP.', 110.99, 3);
 INSERT INTO article_table (id, title, description, price, owner) VALUES (4,'Waschmaschine Bosch MX-340', 'Wäscht wunderbar.', 149.99, 3);

@@ -160,8 +160,8 @@ module.exports.getArticles = async function (search, locations, categories, orde
     }
     sql = sql + p;
 
-    page = page * 5;                            // limit the results to the current page
-    sql = sql + ` LIMIT ${page},5;`
+    page = page * 10;                            // limit the results to the current page
+    sql = sql + ` LIMIT ${page},10;`
     //console.log(sql);
     try {
         let rows = await query(sql);
@@ -179,10 +179,10 @@ module.exports.getArticles = async function (search, locations, categories, orde
 
 
 module.exports.getUserArticles = async function (uid, page = 0) {
-    page = parseInt(page * 5);
+    page = parseInt(page * 10);
     if(page == NaN) page = 0;
     let sql = `SELECT DISTINCT a.${COLS[0]}, a.${COLS[1]}, a.${COLS[2]}, a.${COLS[3]}, a.${COLS[4]}, a.${COLS[5]}, ap.${ART_PIC.COLS[2]} FROM ${TBNAME} AS a `
-    + `LEFT JOIN (SELECT ${ART_PIC.COLS[0]}, ${ART_PIC.COLS[2]} FROM ${ART_PIC.TBNAME} WHERE ${ART_PIC.COLS[1]} = 0) AS ap ON ap.${ART_PIC.COLS[0]} = a.${COLS[0]} WHERE a.${COLS[5]} = '${uid}' LIMIT ${page},5;`;
+    + `LEFT JOIN (SELECT ${ART_PIC.COLS[0]}, ${ART_PIC.COLS[2]} FROM ${ART_PIC.TBNAME} WHERE ${ART_PIC.COLS[1]} = 0) AS ap ON ap.${ART_PIC.COLS[0]} = a.${COLS[0]} WHERE a.${COLS[5]} = '${uid}' LIMIT ${page},10;`;
 
     try {
         let rows = await query(sql);

@@ -9,30 +9,33 @@
 
   <title>SmallMarket</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.2/cjs/popper.min.js"></script>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <link href="  https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+  <script src="/static/js/basic.js"></script>
   <link rel="stylesheet" href="/static/styles/styles.css">
 </head>
 
 <body>
   <form method="GET" id="searchform">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#"><div class="row pl-3"><img src="/static/img/logo.jpg" height ="35"><h3 class="pl-3">Small Market</h3></div></a>
+  <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+    <a class="navbar-brand" href="#"><div class="row pl-3"><img src="/static/img/logo.jpg" height ="35"><h4 class="pl-3">Small Market</h4></div></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <input class="form-control mr-sm-2 ml-lg-5" style="width: auto;" type="text" placeholder="..." name="search" id="search" value="<%=locals.search%>">
-      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" id="searchsubmit">Suchen</button> 
+      <div class="form-inline">
+        <input class="form-control mr-2 ml-md-5" type="text" placeholder="..." name="search" id="search" value="<%=locals.search%>">
+        <button class="btn btn-outline-primary" type="submit" id="searchsubmit">Suchen</button> 
+      </div>
+      
 
       <!-- Nav Item - Personal -->
-      <div class="nav-item dropdown ml-auto">
+      <div class="nav-item dropdown ml-auto mt-2 mt-md-0">
         <a class="btn btn-link" type="button" id="userDropdown" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            <span class="mr-2 d-none d-lg-inline text-secondary font-weight-bold small">
+            <span class="mr-2 d-none d-inline text-secondary font-weight-bold small">
               Persönlich
               <a class="btn btn-secondary btn-circle" data-toggle="dropdown">
                 <i class="fas fa-user text-white"></i>
@@ -41,7 +44,11 @@
           </a>
         <!-- Dropdown - User Information -->
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-            <a class="dropdown-item" href="/profile">
+            <% if (user && user.name) { %>
+              <a class="dropdown-item" href="/profile/<%=user.name%>">
+            <% } else { %>
+              <a class="dropdown-item" href="/login">
+            <% } %>
                 <i class="fas fa-user fa-sm fa-fw mr-2"></i>
                 Profil
             </a>
@@ -51,129 +58,144 @@
             </a>
 
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/logout">
+            <% if (user && user.id) { %>
+              <a class="dropdown-item" href="/logout">
                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
                 Logout
-            </a>
+              </a>
+            <% } else { %>
+              <a class="dropdown-item" href="/login">
+                <i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i>
+                Login
+              </a>
+            <% } %>
         </div>
       </div>
     </div>
   </nav>
-    <div style="display: flex;" id="bodywrapper">
-      <div>
-        <div class="card bg-secondary text-white m-3 p-3">
-          <h2>Kategorien:</h2>
+    <div style="display: flex; flex-wrap: wrap;" id="bodywrapper">
+      <div class="col-md-3">
+        <div class="card bg-secondary text-white m-3 p-2">
+          <div class="row justify-content-between">
+            <h3 class="d-inline ml-3">Kategorien:</h3>
+            <button type="button" class="btn btn-outline-light d-md-none float-right mr-3" data-toggle="collapse" data-target="#categorywrapper" aria-controls="categorywrapper"><i class="fas fa-bars"></i></button>
+          </div>
+          <div id="categorywrapper" class="collapse d-md-block">
           <% for (x = 0; x < categories.length; x++) { %>
             <% if (categories[x]['parent'] == 0) { %>
               <% if (x > 0) { %>
               </ul></div>
               <% } %>
-              <div class="card bg-dark m-3 p-3">
-              <h3><%=categories[x]['name']%> (<%=categories[x]['count']%>)
+              <div class="card bg-dark my-2 p-3">
+              <p class="h5 d-flex justify-content-between align-items-center mb-1 p-1 filter-hover" onclick="checked(this)"><%=categories[x]['name']%> 
+                <span class="badge badge-light"><%=categories[x]['count']%></span>
                 <% if (cat.includes(categories[x]['id'].toString())) { %>
-                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked>
+                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked hidden>
                 <% } else { %>
-                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
+                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" hidden>
                 <% } %>
-              </h3>
-              <ul>
+                </p>
+              <ul class="list-group">
             <% } else { %>
-              <li><%=categories[x]['name']%> (<%=categories[x]['count']%>)
+              <li class="d-flex justify-content-between align-items-center ml-2 filter-hover" style="padding: 2px 5px;" onclick="checked(this)"><%=categories[x]['name']%> 
+                <span class="badge badge-light"><%=categories[x]['count']%></span>
                 <% if (cat.includes(categories[x]['id'].toString())) { %>
-                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked>
+                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" checked hidden>
                 <% } else { %>
-                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat">
+                <input type="checkbox" value="<%=categories[x]['id']%>" name="cat" hidden>
                 <% } %>
               </li>
             <% } %>
             <% if (x == categories.length - 1) { %> </ul></div> <% } %>
           <% } %>
-          </div>
-          <div class="card bg-secondary text-white m-3 p-3">
-        <h2>Preis:</h2>
-          <div style="display: inline-block;">
-            <input type="number" name="pl" id="pl" min="0" max="9999999" value="<%=price[0]%>">
-            <input type="number" name="ph" id="ph" min="1" max="10000000" value="<%=price[1]%>">
+        </div>
+      </div>
+      <div class="card bg-secondary text-white m-3 p-2">
+        <h3>Preis:</h3>
+        <div class="card bg-dark my-2 p-3">
+          <div class="row">
+            <div class="col-lg-6">
+              <input class="input-group" type="number" name="pl" id="pl" min="0" max="9999999" value="<%=price[0]%>">
+            </div>
+            <div class="col-lg-6">
+              <input class="input-group" type="number" name="ph" id="ph" min="1" max="10000000" value="<%=price[1]%>">
+            </div>
           </div>
         </div>
-        <div class="card bg-secondary text-white m-3 p-3">
-        <h2>Ergebnisse in:</h2>
-        <ul>
-            <% for (x = 0; x < locations.length; x++) { %>
-              <li><%=locations[x]['address']%> (<%=locations[x]['count']%>)
-                <% if (loc.includes(locations[x]['address'])) { %>
-                <input type="checkbox" value="<%=locations[x]['address']%>" name="loc" checked>
-                <% } else { %>
-                <input type="checkbox" value="<%=locations[x]['address']%>" name="loc">
-                <% } %>
-              </li>
-            <% } %>
-          </ul>
+      </div>
+        <div class="card bg-secondary text-white m-3 p-2">
+          <div class="row justify-content-between">
+            <h3 class="d-inline ml-3">Gebiet:</h3>
+            <button type="button" class="btn btn-outline-light d-md-none float-right mr-3" data-toggle="collapse" data-target="#locwrapper" aria-controls="locwrapper"><i class="fas fa-bars"></i></button>
+          </div>
+          
+          <div class="card bg-dark my-2 p-3 collapse d-md-block" id="locwrapper">
+            <ul class="list-group">
+              <% for (x = 0; x < locations.length; x++) { %>
+                <li class="d-flex justify-content-between align-items-center filter-hover" style="padding: 2px 5px;" onclick="checked(this)"><%=locations[x]['address']%> 
+                  <span class="badge badge-light"><%=locations[x]['count']%></span>
+                  <% if (loc.includes(locations[x]['address'])) { %>
+                  <input type="checkbox" value="<%=locations[x]['address']%>" name="loc" checked hidden>
+                  <% } else { %>
+                  <input type="checkbox" value="<%=locations[x]['address']%>" name="loc" hidden>
+                  <% } %>
+                </li>
+              <% } %>
+            </ul>
+          </div>
         </div>
         <input type="hidden" name="page" id="page-input">
       </div>
-      <div>
-        <div>
-            <div class="container rounded bg-light text-black m-3 p-3">
-              <input class="mr-2 ml-4" type="radio" name="order" value="date-a" <% if (order == 'date-a') { %> checked <% } %>>Neueste zuerst
-              <input class="mr-2 ml-4" type="radio" name="order" value="date-d" <% if (order == 'date-d') { %> checked <% } %>>Älteste zuerst
-              <input class="mr-2 ml-4" type="radio" name="order" value="price-a" <% if (order == 'price-a') { %> checked <% } %>>Günstigste zuerst
-              <input class="mr-2 ml-4" type="radio" name="order" value="price-d" <% if (order == 'price-d') { %> checked <% } %>>Teuerste zuerst
-            </div>
-          <input type="hidden" id ="ctr" value="<%=count%>">
-          <p class="container rounded bg-light text-black m-3 p-3"><%=count%> Einträge gefunden</p>
+      <div class="col-md-9 pl-0">
+        <div class="row rounded bg-light text-black m-3 p-3">
+          <label class="m-0"><input class="mr-2 ml-4" type="radio" name="order" value="date-a" <% if (order == 'date-a') { %> checked <% } %>>Neueste zuerst</label>
+          <label class="m-0"><input class="mr-2 ml-4" type="radio" name="order" value="date-d" <% if (order == 'date-d') { %> checked <% } %>>Älteste zuerst</label>
+          <label class="m-0"><input class="mr-2 ml-4" type="radio" name="order" value="price-a" <% if (order == 'price-a') { %> checked <% } %>>Günstigste zuerst</label>
+          <label class="m-0"><input class="mr-2 ml-4" type="radio" name="order" value="price-d" <% if (order == 'price-d') { %> checked <% } %>>Teuerste zuerst</label>
         </div>
-        <br>
-        <div>
+        <input type="hidden" id ="ctr" value="<%=count%>">
+        <p class="row rounded bg-light text-black m-3 p-3"><%=count%> Einträge gefunden</p>
+
+      
           <% for (x = 0; x < articles.length; x++) { %>
             <a id="alink<%=articles[x]['id']%>" href="/article/<%=articles[x]['id']%>/<%=articles[x]['title']%>" hidden></a>
-            <div class="container rounded bg-dark text-white m-3 p-3" style="display: flex;" id="article<%=articles[x]['id']%>" onclick="clicked(this)">
-              <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
-                <img class="rounded mr-3" src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" width="400px" height="300px">
-              <% } else { %>
-                <img class="rounded mr-3" src="/static/img/articles/no-image-found.png" width="400px" height="300px">
-              <% } %>
-              <div class="p-3">
-                <h3><%=articles[x]['title']%></h3>                
-                <p><%=articles[x]['description']%></p>
-                <p>Erstellt von <%=articles[x]['name']%></p>
-                <p><%=articles[x]['created']%></p>
-                <p><%=articles[x]['address']%></p>
-                <p style="color: red; font-size: medium;"><%=articles[x]['price'].toFixed(2)%> €</p>
-              </div>    
-                     
+            <div class="row rounded bg-dark text-white p-3 m-3 article-card" id="article<%=articles[x]['id']%>" onclick="clicked(this)">
+        
+                <div class="col-sm-4 picwrapper">
+                  <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
+                    <img class="pics" src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>">
+                  <% } else { %>
+                    <img class="pics" src="/static/img/articles/no-image-found.png">
+                  <% } %>
+                </div>
+                
+                <div class="col-sm-6">
+                  <p class="h3"><%=articles[x]['title']%></p>
+                  <hr>                
+                  <p><%=articles[x]['description']%></p>
+                  <span style="position: absolute; bottom: 0;">
+                    <small>Nutzer: <%=articles[x]['name']%></small>
+                    <small class="pl-3">Adresse: <%=articles[x]['address']%></small>
+                  </span>
+                </div>  
+                
+                <div class="col-sm-2">
+                  <p style="font-size:larger;"><%=articles[x]['price'].toFixed(2)%> €</p>
+                  <span style="position: absolute; bottom: 0;">
+                    <small><%=articles[x]['created']%></small>
+                  </span>
+                </div>
+              
             </div>
           <% } %>
-        </div>
-        <p id="pages">
+  
+        <div class="row rounded bg-light text-black m-3 p-3 justify-content-center" id="pages">
 
-        </p>
+        </div>
       </div>
     </div>
     
     
   </form>
 </body>
-<script src="/static/js/jquery-3.3.1.min.js"></script>
-<script>
-  $(() => {
-        let ctr = $('#ctr').val();
-        for (x = 0; x < ctr/5; x++) {
-            let el = document.createElement('a');
-            el.href = '#';
-            el.text = (x + 1).toString();
-            el.addEventListener('click', (ev) => {
-              $('#page-input').val(ev.target.text);
-              $('#searchform').submit();
-            })
-            document.getElementById('pages').appendChild(el);
-        }
-    })
-
-    function clicked (el) {
-      let aid = el.id.split('article').pop();
-      aid = '#alink' + aid;
-      $(aid)[0].click();
-    }
-</script>
 </html>

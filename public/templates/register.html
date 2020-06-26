@@ -7,51 +7,77 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>SmallMarket - Register</title>
+  <title>SmallMarket</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/valid-forms.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles/auth.css">
 
 </head>
 
 <body>
-    <h2>Register</h2>
-    <form action="/register" id="register-form" name="register-form" method="POST" enctype="application/x-www-form-urlencoded">
-        <input type="text" id="username" name="username" maxlength="25" minlength="5" pattern="[a-zA-Z0-9]{5,25}" placeholder="Benutzername" required>
-        <input type="text" id="plz" name="plz" pattern="[0-9]{5}" placeholder="PLZ" required>
-        <select id="city" name="city" style="width: 160px;" required ></select>
-        <input type="email" id="mail" name="mail" placeholder="Email" maxlength="40" minlength="5" required>
-        <input type="tel" id="phone" name="phone" placeholder="Telefonnummer">
-        <input type="password" id="password" name="password" pattern="[a-zA-Z0-9+-/_]{6,15}" placeholder="Passwort" required>
-        <input type="password" id="confirmpwd" name="confirmpwd" placeholder="Passwort wiederholen" required>
-        <button type="submit" id="register-submit">Register</button>
-    </form>
-    <br>
-    <div>
-        <% for (x in flashes) { %>
-            <span><%=x%>: <%=flashes[x]%></span><br>
-        <% } %>
+    <div id="logreg-forms">
+        <form id="register-form" method="POST" enctype="application/x-www-form-urlencoded" name="register-form" class="needs-validation was-validated">
+            <h4 style="text-align: center;" class="mb-3"> REGISTRIEREN  </h4>
+            <div class="form-group">
+                <input type="text" id="username" name="username" class="form-control" maxlength="25" minlength="5" pattern="[a-zA-Z0-9]{5,25}" placeholder="Benutzername" 
+                    aria-describedby="username-help" required autofocus>
+                <% if (flashes.username) { %>
+                    <small class="invalid-feedback"><%=flashes.username%></small>
+                <% } %>
+                <small id="username-help" class="text-muted">Zwischen 5 und 25 Zeichen. Nur Alphabet und Zahlen 0 bis 9.</small>
+            </div>
+            <div class="form-group  my-2">
+                <input type="email" id="mail" name="mail" class="form-control" pattern="(\D)+(\w)*((\.(\w)+)?)+@(\D)+(\w)*((\.(\D)+(\w)*)+)?(\.)[a-z]{2,}" placeholder="Email Adresse" required>
+                <% if (flashes.mail) { %>
+                    <small class="invalid-feedback"><%=flashes.mail%></small>
+                <% } %>
+            </div>
+            <div class="form-group">
+                <input type="tel" id="phone" name="phone" class="form-control" pattern="[0-9]{1,15}" placeholder="Telefon (optional)">
+                <% if (flashes.phone) { %>
+                    <small class="invalid-feedback"><%=flashes.phone%></small>
+                <% } %>
+            </div>
+            <div class="form-row mt-2">
+                <div class="form-group col-5">
+                    <input type="text" id="plz" name="plz" pattern="[0-9]{5}" class="form-control" placeholder="PLZ" required>
+                    <% if (flashes.plz) { %>
+                        <small class="invalid-feedback"><%=flashes.plz%></small>
+                    <% } %>
+                </div>
+                <div class="form-group col-7">
+                    <select id="city" name="city" class="form-control" required ></select>
+                    <% if (flashes.city) { %>
+                        <small class="invalid-feedback"><%=flashes.city%></small>
+                    <% } %>
+                </div> 
+            </div>
+            
+            <div class="form-group mt-2">
+                <input type="password" id="password" name="password" class="form-control pw-new-group" aria-describedby="new-password-help" pattern="[a-zA-Z0-9+-/_]{6,15}" placeholder="Passwort" required>
+                <% if (flashes.password) { %>
+                    <small class="invalid-feedback"><%=flashes.password%></small>
+                <% } %>
+                <small id="new-password-help" class="text-muted">Zwischen 6 und 15 Zeichen erforderlich. Kann Buchstaben, Zahlen und die Sonderzeichen +-/_ enthalten.</small>
+            </div>
+            <div class="form-group">
+                <input type="password" id="confirmpwd" name="confirmpwd" class="form-control pw-new-group" placeholder="Passwort wiederholen">
+                <% if (flashes.confirmpwd) { %>
+                    <small class="invalid-feedback"><%=flashes.confirmpwd%></small>
+                <% } %>
+                <small class="invalid-feedback">
+                  Stimmt nicht überein!
+                </small>
+            </div>
+            <hr>
+            <button class="btn btn-primary btn-block" type="submit"><i class="fas fa-user-plus"></i> Account anlegen</button>
+            <a href="./login" id="cancel_signup"><i class="fas fa-angle-left"></i> Login</a>
+        </form>
     </div>
-
-    <script src="/static/js/jquery-3.3.1.min.js"></script>
-    <script>
-        $('#plz').on('keyup', (ev) => {
-            let val = $(ev.target).val();
-            if (val.length == 5) {
-                $.ajax({
-                    url: '/register/plz',
-                    type: 'GET',
-                    data: { plz: val },
-                    dataType: 'JSON',
-                    success: function (res) {
-                        $('#city').children().remove();
-                        for(x in res) {
-                            let el = document.createElement('option');
-                            el.text = res[x];
-                            document.getElementById('city').appendChild(el);
-                        }
-                    }
-                })
-            }
-        })
-    </script>
 </body>
-
+<script src="/static/js/register.js"></script>
 </html>

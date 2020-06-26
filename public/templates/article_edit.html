@@ -9,6 +9,8 @@
 
   <title>SmallMarket</title>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </head>
 
 <style>
@@ -65,7 +67,7 @@
     </div>
     
 </body>
-<script src="/static/js/jquery-3.3.1.min.js"></script>
+
 <script>
     function select_cat (e_id) {
         let p_id = e_id.split('c').pop();
@@ -126,7 +128,7 @@
             div.append(el);
             el = document.createElement('button');
             el.id = `art${response['aid']}pic${pc}`;
-            el.addEventListener('click', remove_picture(this));
+            el.onclick = 'remove_picture(this)';
             el.textContent = 'X';
             div.append(el);
             $('#imagewrapper').append(div);
