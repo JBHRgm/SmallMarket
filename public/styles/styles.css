@@ -11,6 +11,10 @@
     cursor: pointer;
 }
 
+.article-card {
+    min-height: 230px;
+}
+
 .pics {
     position: relative;
     max-height: 100%;
@@ -19,7 +23,11 @@
     transform: translateY(-50%);
 }
 
-#picwrapper {
-    /* height: 500px; */
+.picwrapper {
+    max-height: 220px;
     text-align: center;
 }
+
+
+
+

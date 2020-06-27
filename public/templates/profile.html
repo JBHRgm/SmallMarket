@@ -10,55 +10,123 @@
   <title>SmallMarket</title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+  <link href="/static/styles/styles.css" rel="stylesheet">
 
 </head>
 
 <body>
-    <h2>Profil von <%=user['name']%></h2>
-    <div>
-        <h3>Nutzername: <%=user['name']%></h3>
-        <p>E-Mail: <%=user['mail']%></p>
-        <p>Wohnort: <%=user['address']%></p>
-        <p>Registriert seit: <%=user['registered']%></p>
-        <input type="hidden" id="ctr" value="<%=count%>">
-    </div>
-
-    <div>
-        <% for (x = 0; x < articles.length; x++) { %>
-            <div style="display: flex; justify-content: space-around;" id="article<%=articles[x]['id']%>">
-              <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
-                <img src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" width="400px" height="300px">
+  <form method="GET" action="/" id="searchform">
+    <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+      <a class="navbar-brand" href="#"><div class="row pl-3"><img src="/static/img/logo.jpg" height ="35"><h4 class="pl-3">Small Market</h4></div></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="form-inline">
+          <input class="form-control mr-2 ml-md-5" type="text" placeholder="..." name="search" id="search" value="<%=locals.search%>">
+          <button class="btn btn-outline-primary" type="submit" id="searchsubmit">Suchen</button> 
+        </div>
+        
+  
+        <!-- Nav Item - Personal -->
+        <div class="nav-item dropdown ml-auto mt-2 mt-md-0">
+          <a class="btn btn-link" type="button" id="userDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <span class="mr-2 d-none d-inline text-secondary font-weight-bold small">
+                Persönlich
+                <a class="btn btn-secondary btn-circle" data-toggle="dropdown">
+                  <i class="fas fa-user text-white"></i>
+                </a>
+              </span>
+            </a>
+          <!-- Dropdown - User Information -->
+          <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+              <% if (user && user.name) { %>
+                <a class="dropdown-item" href="/profile/<%=user.name%>">
               <% } else { %>
-                <img src="/static/img/articles/no-image-found.png" width="400px" height="300px">
+                <a class="dropdown-item" href="/login">
               <% } %>
-              <div>
-                <h3><%=articles[x]['title']%></h3>
-                <p><%=articles[x]['description']%></p>
-                <%=articles[x]['created']%>
-              </div>
-              <div>
-                <p><%=user['name']%></p>
-                <p><%=user['address']%></p>
-                <p style="color: red; font-size: medium;"><%=articles[x]['price'].toFixed(2)%> €</p>
-              </div>
-            </div>
-        <% } %>
-    </div>
-    <p id="pages">
+                  <i class="fas fa-user fa-sm fa-fw mr-2"></i>
+                  Profil
+              </a>
+              <a class="dropdown-item" href="/chat">
+                <i class="fas fa-envelope fa-sm fa-fw mr-2"></i>
+                  Nachrichten
+              </a>
+  
+              <div class="dropdown-divider"></div>
+              <% if (user && user.id) { %>
+                <a class="dropdown-item" href="/logout">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
+                  Logout
+                </a>
+              <% } else { %>
+                <a class="dropdown-item" href="/login">
+                  <i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i>
+                  Login
+                </a>
+              <% } %>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </form>
 
-    </p>
+  <div style="display: block; margin: 0 5vw;">
+    <div class="row rounded bg-secondary text-white m-3 p-3">
+      <div class="col-md-8 rounded bg-dark">
+        <h3 class="pt-2"><%=puser['name']%></h3>
+        <hr class="my-3" style="border-color: grey;">
+        <a href="mailto:<%=puser['mail']%>"><i class="fas fa-envelope mr-2"></i>E-Mail: <%=puser['mail']%></a>
+        <p class="my-2"><i class="fas fa-map-marker-alt mr-2"></i>Gebiet: <%=puser['address']%></p>
+        <p class="mb-2"><i class="fas fa-phone-alt mr-2"></i>Telefon: <%=puser['phone'] || 'privat'%></p>
+        <div style="display: flex; flex-wrap: wrap;" class="justify-content-between mb-2">
+            <p class="text-muted my-0">Registriert seit: <%=puser['registered']%></p>
+            <span class="text-muted">Anzeigen: <%=count%></a>
+        </div>
+      </div>
+    </div>
+    <div class="row rounded bg-secondary text-white m-3">
+      <% for (x = 0; x < articles.length; x++) { %>
+        <a id="alink<%=articles[x]['id']%>" href="/article/<%=articles[x]['id']%>/<%=articles[x]['title']%>" hidden></a>
+        <div class="row rounded bg-dark text-white p-3 m-3 article-card" id="article<%=articles[x]['id']%>" style="width: 100%" onclick="clicked(this)">
+    
+            <div class="col-sm-4 picwrapper mb-sm-0 mb-2">
+              <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
+                <img class="pics" src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>" >
+              <% } else { %>
+                <img class="pics" src="/static/img/articles/no-image-found.png">
+              <% } %>
+            </div>
+            
+            <div class="col-sm-6">
+              <p class="h3"><%=articles[x]['title']%></p>
+              <hr>                
+              <p><%=articles[x]['description']%></p>
+            </div>  
+            
+            <div class="col-sm-2">
+              <p style="font-size:larger;" class="pb-2 pb-sm-0"><%=articles[x]['price'].toFixed(2)%> €</p>
+              <span style="position: absolute; bottom: 0;">
+                <small><%=articles[x]['created']%></small>
+              </span>
+            </div>
+          
+        </div>
+      <% } %>
+    </div>
+  </div>
     
 </body>
-
 <script>
-    $(() => {
-        let ctr = $('#ctr').val();
-        for (x = 0; x < ctr/10; x++) {
-            let el = document.createElement('a');
-            el.href = window.location.href.replace(/\/\?page=[0-9]+/, '') + '/?page=' + x;
-            el.text = (x + 1).toString();
-            document.getElementById('pages').appendChild(el);
-        }
-    })
+  function clicked (el) {
+    let aid = el.id.split('article').pop();
+    aid = '#alink' + aid;
+    $(aid)[0].click();
+}
 </script>
 </html>

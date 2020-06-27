@@ -17,9 +17,9 @@ router.get('/:name', async function(req, res) {
         else {  
             user = await USER.getUserByName(uname);
             if (!user) throw `User ${uname} has not been found!`;
-            articles = await ARTICLE.getUserArticles(user[USER.COLS[0]], req.query.page);
+            articles = await ARTICLE.getUserArticles(user[USER.COLS[0]]);
             let count = await ARTICLE.getOwnerArticleCount(user[USER.COLS[0]]);
-            return res.render('profile.html', { user: user, articles: articles, count: count });
+            return res.render('profile.html', { puser: user, articles: articles, count: count, user: {} });
         }
         
     } catch (err) {
@@ -88,7 +88,7 @@ router.post('/:name', isAuthenticated , async function (req, res) {
 
         if (!ok) {
             res.locals.data = [n_mail, n_tel];
-            throw "Invalid Input";
+            return res.redirect(req.originalUrl);
         }
     
         if (req.user && req.user.name == u_name) {
@@ -105,19 +105,5 @@ router.post('/:name', isAuthenticated , async function (req, res) {
         return res.redirect('/');
     }
 })
-
-router.get('/:name/own', isAuthenticated, async function (req, res) {
-    let u_name = req.params.name;
-    let articles, count;
-
-    try {
-        if (req.user.name != u_name) throw "Missing Permissions!";
-        
-    } catch (err) {
-        console.log(err);
-    }
-    return res.json({articles: articles, count: count});
-})
-
 
 module.exports = router;

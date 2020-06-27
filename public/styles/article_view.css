@@ -11,6 +11,11 @@
     transform: translateY(-50%);
 }
 
+#ownername:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .pic-button {
     position: absolute;
     top: 50%;
@@ -37,7 +42,7 @@
 .cont {
     margin-left: auto;
     margin-right: auto;
-    height: 500px;
+    height: 40vw;
     position: relative;
     box-sizing: border-box;
     white-space: nowrap;
@@ -45,4 +50,35 @@
     border: 1px solid grey;
     text-align: center;
     background-color: rgba(0, 0, 0, 0.8);
+}
+
+.pricefont {
+    font-size: 4em;
+}
+
+.wrapper {
+    display: block;
+    margin: 0 5vw;
+}
+
+@media screen and (max-width: 550px) {
+    .h3 {
+        font-size: 20px;
+    }
+
+    .cont {
+        height: 60vw;
+    }
+}
+
+@media screen and (max-width: 1199px) {
+    .pricefont {
+        font-size: 3em;
+    }
+}
+
+@media screen and (max-width: 390px) {
+    .pricefont {
+        font-size: 2em;
+    }
 }

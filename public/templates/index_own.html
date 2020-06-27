@@ -161,7 +161,7 @@
             <a id="alink<%=articles[x]['id']%>" href="/article/<%=articles[x]['id']%>/<%=articles[x]['title']%>" hidden></a>
             <div class="row rounded bg-dark text-white p-3 m-3 article-card" id="article<%=articles[x]['id']%>" onclick="clicked(this)">
         
-                <div class="col-sm-4 picwrapper">
+                <div class="col-sm-4 picwrapper mb-2 mb-sm-0">
                   <% if (articles[x]['picture']) { let folder = articles[x]['picture'].split('pic').shift(); %>
                     <img class="pics" src="/static/img/articles/<%=folder + '/' + articles[x]['picture']%>">
                   <% } else { %>
@@ -171,11 +171,11 @@
                 
                 <div class="col-sm-6">
                   <p class="h3"><%=articles[x]['title']%></p>
-                  <hr>                
+                  <hr class="my-2">                
                   <p><%=articles[x]['description']%></p>
                   <span style="position: absolute; bottom: 0;">
                     <small>Nutzer: <%=articles[x]['name']%></small>
-                    <small class="pl-3">Adresse: <%=articles[x]['address']%></small>
+                    <small class="pl-3">Gebiet: <%=articles[x]['address']%></small>
                   </span>
                 </div>  
                 

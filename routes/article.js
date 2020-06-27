@@ -18,6 +18,7 @@ router.get('/:id/del', isAuthenticated, async function (req, res) {
             await ARTICLE.deleteArticle(a_id);
         }
         else throw "Missing Permissions!";
+        //await upload.mw_Del(a_id);                // delete folder with pictures, folder cannot be empty, so you need to unlink every file before removing the folder
     } catch (err) {
         console.log(err);
         return res.redirect('/');
@@ -74,11 +75,6 @@ router.post('/new/pic', isAuthenticated, upload.mw_CreateFolder, async function 
 })
 
 
-router.get('new/pic/rem', isAuthenticated, async function (req, res) {
-
-})
-
-
 router.post('/new', isAuthenticated, async function (req, res) {
     let title = req.body['a-title'];
     let descr = req.body['a-description'];
@@ -86,6 +82,8 @@ router.post('/new', isAuthenticated, async function (req, res) {
     let pic_count = req.body['a-piccount'];
     let cat = req.body['a-cat'];
     let sub_cat = req.body['a-subcat'] || 0;
+
+    if (price == "") price = 0;
 
     try {
         let aid = await ARTICLE.getMaxIndex() + 1;

@@ -39,8 +39,9 @@ module.exports.createTable = async function () {
 module.exports.registerUser = async function (name, mail, pwd, address, tel) {
     try {
         pwd = bcrypt.hashSync(pwd, 10);
-        if (tel == '') tel = null;
-        let sql = `INSERT INTO ${TBNAME} (${COLS[2]},${COLS[3]},${COLS[4]},${COLS[5]},${COLS[6]}) VALUES ('${name}','${mail}','${pwd}','${address}','${tel}');`
+        let sql = `INSERT INTO ${TBNAME} (${COLS[2]},${COLS[3]},${COLS[4]},${COLS[5]},${COLS[6]}) VALUES ('${name}','${mail}','${pwd}','${address}'#);`
+        if (tel != '') sql = sql.replace('#', `,'${tel}'`);
+        else sql = sql.replace('#', '');
         
         let res = await query(sql);
         return 1;

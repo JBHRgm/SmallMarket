@@ -178,11 +178,9 @@ module.exports.getArticles = async function (search, locations, categories, orde
 }
 
 
-module.exports.getUserArticles = async function (uid, page = 0) {
-    page = parseInt(page * 10);
-    if(page == NaN) page = 0;
+module.exports.getUserArticles = async function (uid) {
     let sql = `SELECT DISTINCT a.${COLS[0]}, a.${COLS[1]}, a.${COLS[2]}, a.${COLS[3]}, a.${COLS[4]}, a.${COLS[5]}, ap.${ART_PIC.COLS[2]} FROM ${TBNAME} AS a `
-    + `LEFT JOIN (SELECT ${ART_PIC.COLS[0]}, ${ART_PIC.COLS[2]} FROM ${ART_PIC.TBNAME} WHERE ${ART_PIC.COLS[1]} = 0) AS ap ON ap.${ART_PIC.COLS[0]} = a.${COLS[0]} WHERE a.${COLS[5]} = '${uid}' LIMIT ${page},10;`;
+    + `LEFT JOIN (SELECT ${ART_PIC.COLS[0]}, ${ART_PIC.COLS[2]} FROM ${ART_PIC.TBNAME} WHERE ${ART_PIC.COLS[1]} = 0) AS ap ON ap.${ART_PIC.COLS[0]} = a.${COLS[0]} WHERE a.${COLS[5]} = '${uid}';`;
 
     try {
         let rows = await query(sql);

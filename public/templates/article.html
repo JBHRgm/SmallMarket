@@ -77,12 +77,11 @@
         </nav>
     </form>
 
-    <div class="container">
+    <div class="wrapper">
         <div class="row rounded bg-secondary text-white m-3 p-3">
             <p class="h3 col-9"><%=article['title']%></p>
-            <button class="btn btn-primary">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
         </div>
-        <div class="container">
+        <div style="display: block;" class="mx-3">
             <div class="rounded bg-secondary p-1">
                 <div class="cont" id="picwrapper">
                     <% if (pictures.length > 0) { %>
@@ -92,27 +91,31 @@
                         <button class="pic-button" onclick="slide(-1)" style="left: 0%;">&#10094;</button>
                         <button class="pic-button" onclick="slide(1)" style="right: 0%;">&#10095;</button>
                      <% } else { %>
-                        <img width="300px" height="230px" src="/static/img/articles/no-image-found.png">
+                        <img class="pics" src="/static/img/articles/no-image-found.png">
                     <% } %>
                     </div>
                 </div>
             </div>
             <div class="row rounded bg-secondary text-white p-3 m-3">
-              <div class="col-5 rounded bg-dark">
-                <h3 class="pt-2">Nutzer:</h3>
-                <hr>
-                <p>Erstellt von: <%=owner['name']%></p>
-                <p>Mail: <%=owner['mail']%></p>
-                <p>Wohnort: <%=owner['address']%></p>
-                <p>Nutzer registriert seit: <%=owner['registered']%></p>
+              <div class="col-md-7 rounded bg-dark">
+                <h3 id="ownername" class="pt-2" onclick="$('#profilelink')[0].click();"><%=owner['name']%></h3>
+                <hr class="my-3" style="border-color: grey;">
+                <a href="mailto:<%=owner['mail']%>"><i class="fas fa-envelope mr-2"></i><%=owner['mail']%></a>
+                <p class="my-2"><i class="fas fa-map-marker-alt mr-2"></i><%=owner['address']%></p>
+                <p class="mb-2"><i class="fas fa-phone-alt mr-2"></i><%=owner['phone'] || 'privat'%></p>
+                <div style="display: flex; flex-wrap: wrap;" class="justify-content-between">
+                    <p class="text-muted my-0">Registriert seit: <%=owner['registered']%></p>
+                    <a id="profilelink" class="text-muted" href="/profile/<%=owner['name']%>">Anzeigen: <%=owner['count']%></a>
+                </div>
+                <hr class="my-3" style="border-color: grey;">
+                <button class="btn btn-primary mb-3">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
               </div>
-              <div class="col-7">
-                  <p class="text-white float-right display-1"><%=article['price']%> €</p>
-
+              <div class="col-md-5">
+                  <p class="text-white float-right pricefont"><%=article['price']%> €</p>
               </div>
-              <button class="btn btn-primary m-3">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
-              <p style="margin-left: auto; margin-top: auto;">Erstellt am: <%=article['created']%></p>
-
+              <div style="display: flex; width: 100%;" class="justify-content-end">
+                <div class="ml-auto">Erstellt am: <%=article['created']%></div>
+              </div>
             </div>
             <div class="rounded bg-secondary text-white p-3 m-3">
               <h3>Beschreibung</h3>

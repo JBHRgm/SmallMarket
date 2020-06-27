@@ -49,8 +49,16 @@ var createFolder = async function (req, res, next) {
 }
 
 
-var del = async function () {
-    
+var del = async function (aid) {            // function to delete the picture folder, but every picture needs to be unlinked before
+    try {
+        fs.rmdir(path.join(__dirname, `../public/img/articles/art${aid}`), function (err) {
+            if (err) console.log(err);
+        })
+    } catch (err) {
+        console.log(err);
+        return 0;
+    }
+    return 1;
 }
 
 var uploadFiles = multer({ storage: storage }).single("a-picture");

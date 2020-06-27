@@ -8,126 +8,141 @@
         <title>SmallMarket</title>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/js/article_edit.js"></script>
+        <script src="/static/js/article_view.js"></script>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+        <link href="/static/styles/article_view.css" rel="stylesheet">
+
     </head>
 
-    <style>
-        .pics {
-            position: relative;
-            max-height: 100%;
-            max-width: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-    </style>
-
     <body>
-        <div style="display: flex;" id="categorywrapper">
-            <div>
-                <% for (x = 0; x < cats.length; x++) { %> <% if (cats[x]['parent'] == 0) { %>
-                <span style="display: block;" id="c<%=cats[x]['id']%>" onclick="select_cat(this.id)"><%=cats[x]['name']%></span>
-                <% } %> <% } %>
+        <form method="GET" action="/" id="searchform">
+            <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+              <a class="navbar-brand" href="#"><div class="row pl-3"><img src="/static/img/logo.jpg" height ="35"><h4 class="pl-3">Small Market</h4></div></a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="form-inline">
+                  <input class="form-control mr-2 ml-md-5" type="text" placeholder="..." name="search" id="search" value="<%=locals.search%>">
+                  <button class="btn btn-outline-primary" type="submit" id="searchsubmit">Suchen</button> 
+                </div>
+                
+          
+                <!-- Nav Item - Personal -->
+                <div class="nav-item dropdown ml-auto mt-2 mt-md-0">
+                  <a class="btn btn-link" type="button" id="userDropdown" role="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <span class="mr-2 d-none d-inline text-secondary font-weight-bold small">
+                        Persönlich
+                        <a class="btn btn-secondary btn-circle" data-toggle="dropdown">
+                          <i class="fas fa-user text-white"></i>
+                        </a>
+                      </span>
+                    </a>
+                  <!-- Dropdown - User Information -->
+                  <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                      <% if (user && user.name) { %>
+                        <a class="dropdown-item" href="/profile/<%=user.name%>">
+                      <% } else { %>
+                        <a class="dropdown-item" href="/login">
+                      <% } %>
+                          <i class="fas fa-user fa-sm fa-fw mr-2"></i>
+                          Profil
+                      </a>
+                      <a class="dropdown-item" href="/chat">
+                        <i class="fas fa-envelope fa-sm fa-fw mr-2"></i>
+                          Nachrichten
+                      </a>
+          
+                      <div class="dropdown-divider"></div>
+                      <% if (user && user.id) { %>
+                        <a class="dropdown-item" href="/logout">
+                          <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
+                          Logout
+                        </a>
+                      <% } else { %>
+                        <a class="dropdown-item" href="/login">
+                          <i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i>
+                          Login
+                        </a>
+                      <% } %>
+                  </div>
+                </div>
+              </div>
+            </nav>
+        </form>
+        <div class="wrapper">
+            <div class="row rounded bg-secondary text-white m-3 p-3">
+                <div class="col-12">
+                    <h3>Kategorie</h3>
+                </div>
+                <div class="row mx-3" style="width: 100%;">
+                    <div class="col-sm-5 bg-dark rounded mr-sm-1 mr-0 p-3 mb-2 mb-sm-0" id="maincats">
+                        <% for (x = 0; x < cats.length; x++) { %>
+                            <% if (cats[x]['parent'] == 0) { %>
+                            <div class="form-check">
+                                <label class="form-check-label" onclick="select_cat(this)">
+                                    <input class="form-check-input" type="radio" name="a-cat" value="<%=cats[x]['id']%>" required>
+                                    <%=cats[x]['name']%>
+                                </label>
+                            </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                    <div class="col-sm-6 bg-dark rounded ml-sm-1 ml-0 p-3" id="subcats">
+                        <% for (x = 0; x < cats.length; x++) { %>
+                            <% if (cats[x]['parent'] > 0) { %>
+                            <div class="form-check" style="display:none;">
+                                <label class="form-check-label">
+                                    <input class="form-check-input sub<%=cats[x]['parent']%>" type="radio" name="a-subcat" value="<%=cats[x]['id']%>">
+                                    <%=cats[x]['name']%>
+                                </label>
+                            </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
             </div>
-            <div>
-                <% for (x = 0; x < cats.length; x++) { %> <% if (cats[x]['parent'] > 0) { %>
-                <span style="display: none;" id="c<%=cats[x]['id']%>p<%=cats[x]['parent']%>" onclick="select_cat(this.id)"><%=cats[x]['name']%></span>
-                <% } %> <% } %>
+            <div class="row rounded bg-secondary text-white m-3 p-3">
+                <div class="rounded bg-secondary p-1">
+                    <h3>Bilder</h3>
+                    <div class="cont" id="picwrapper">
+                            <button class="pic-button" onclick="slide(-1)" style="left: 0%;">&#10094;</button>
+                            <button class="pic-button" onclick="slide(1)" style="right: 0%;">&#10095;</button>
+                    </div>
+                    <div class="mt-2">
+                        <form method="POST" action="./pic" enctype="multipart/form-data" id="pic-form">
+                            <input type="number" name="ctr" id="pctr" value="0" hidden>
+                            <input type="file" name="a-picture" id="apicture" accept="image/*">
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div style="display: flex;" id="bodywrapper">
-            <div>
-                <form method="POST" id="new-form">
-                    <label for="a-title">Titel: </label>
-                    <input type="text" minlength="5" maxlength="250" id="a-title" name="a-title" required />
-                    <label for="a-price">Preis: </label>
-                    <input type="number" min="0" max="10000000" step="0.01" id="a-price" name="a-price" required />
-                    <label for="a-description">Beschreibung: </label>
+            <form method="POST" id="new-form">
+            <div class="row rounded bg-secondary text-white m-3 p-3">
+                <h3>Titel</h3>
+                <input type="text" class="form-control" minlength="5" maxlength="250" id="a-title" name="a-title" placeholder="Titel ...." required>
+            </div>
+            <div class="row rounded bg-secondary text-white m-3 p-3">
+                <h3>Preis</h3>
+                <input type="number" class="form-control" min="0" max="10000000" step="0.01" id="a-price" name="a-price" required>
+            </div>
+            <div class="row rounded bg-secondary text-white m-3 p-3">
+                <h3>Beschreibung</h3>
+                <div style="display: block">
                     <textarea name="a-description" id="a-description" cols="50" rows="10"></textarea>
-                    <input type="checkbox" id="a-piccount" name="a-piccount" value="0" checked hidden />
-                    <input type="checkbox" id="a-cat" name="a-cat" value="0" checked hidden />
-                    <input type="checkbox" id="a-subcat" name="a-subcat" value="0" checked hidden />
-                    <button type="button" id="new-submit" onclick="submit_new()">Anzeige einstellen</button>
-                </form>
-                <form method="POST" action="./pic" enctype="multipart/form-data" id="pic-form">
-                    <label for="a-picture">Bilder: </label>
-                    <input type="file" id="a-picture" name="a-picture" accept="image/*" />
-                    <input type="number" name="ctr" id="pctr" value="0" hidden />
-                    <button type="submit" id="pic-submit">Hochladen</button>
-                </form>
+                </div>
+                <button type="button" class="btn btn-primary" id="new-submit" onclick="submit_new()">Anzeige erstellen</button>
             </div>
+            <input type="checkbox" id="a-piccount" name="a-piccount" value="0" checked hidden />
+            <input type="checkbox" id="a-cat" name="a-cat" value="0" checked hidden />
+            <input type="checkbox" id="a-subcat" name="a-subcat" value="0" checked hidden />
+            </form>
         </div>
-        <div style="display: flex;" id="imagewrapper"></div>
     </body>
 
-    <script>
-        function select_cat(e_id) {
-            let p_id = e_id.split('c').pop();
-            let spans = $('#categorywrapper div:nth-child(2) span');
-            $(spans).css('color', 'black');
-            if (e_id.search('p') <= 0) {
-                // category has no parent category, display sub-categories
-                $(spans).css('display', 'none');
-                $('#categorywrapper div span').css('color', 'black');
-                for (x = 0; x < spans.length; x++) {
-                    if ($(spans[x]).prop('id').split('p').pop() == p_id) $(spans[x]).css('display', 'block');
-                }
-                $('#a-cat').val(p_id);
-                $('#a-subcat').val(0);
-            } else {
-                p_id = e_id.split('c').pop().split('p').shift();
-                $('#a-subcat').val(p_id);
-            }
-            $('#' + e_id).css('color', 'red');
-        }
-
-        function submit_new() {
-            $('#a-piccount').val($('#pctr').val());
-            if ($('#a-cat').val() > 0) {
-                if ($('#a-subcat').val() == 0) $('#a-subcat').prop('checked', false);
-                $('#new-form').submit();
-            }
-        }
-
-        function remove_picture(el) {
-            console.log(el.id);
-            console.log('a');
-        }
-
-        $('#pic-form').on('submit', function (event) {
-            event.preventDefault(); // Stop the form from causing a page refresh.
-            console.log($('#pctr').val());
-            let form = $('#pic-form')[0];
-            let data = new FormData(form);
-            if ($('#a-picture').val() != '') {
-                $.ajax({
-                    url: window.location.href + '/pic',
-                    method: 'POST',
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    cache: false,
-                })
-                    .then(function (response) {
-                        console.log(response);
-                        let pc = $('#pctr').val();
-                        $('#pctr').val(parseInt($('#pctr').val()) + 1);
-                        let el = document.createElement('img');
-                        el.src = `/static/img/articles/art${response['aid']}/art${response['aid']}pic${pc}.jpg`;
-                        el.className = 'pics';
-                        let div = document.createElement('div');
-                        div.style.height = '300px';
-                        div.style.width = '300px';
-                        div.append(el);
-                        el = document.createElement('button');
-                        el.id = `art${response['aid']}pic${pc}`;
-                        el.onclick = 'remove_picture(this)';
-                        el.textContent = 'X';
-                        div.append(el);
-                        $('#imagewrapper').append(div);
-                    })
-                    .catch(function (err) {
-                        console.error(err);
-                    });
-            }
-        });
-    </script>
 </html>
