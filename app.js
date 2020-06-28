@@ -83,7 +83,7 @@ db.createConnection(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_USE
 .then(async () => {
   await db.createTables();
 
-  await db.initalize_dataset();         // Diese Zeile auskommentieren, falls die Datenbank mit Testdaten gefüttert werden soll, also am besten beim ersten Mal starten auskommentieren und dann wieder als Kommentar setzen
+  //await db.initalize_dataset();         // Diese Zeile auskommentieren, falls die Datenbank mit Testdaten gefüttert werden soll, also am besten beim ersten Mal starten auskommentieren und dann wieder als Kommentar setzen
 
   console.log('Connected to MySQL Database.');
   app.listen(process.env.PORT, function () {
