@@ -124,16 +124,16 @@ async function initalize_dataset () {
     // Kategorien anlegen
     let cat_arr = [
         { name: 'Fahrzeuge', ref: 0 },{ name: 'Autos & Zubehör', ref: 1 },{ name: 'Fahrzeuge', ref: 1 },{ name: 'Boote & Zubehör', ref: 1 },{ name: 'Laster & Zubehör', ref: 1 },{ name: 'Motorräder & Zubehör', ref: 1 },{ name: 'Nutzfahrzeuge & Zubehör', ref: 1 },
-        { name: 'Fahrräder & Zubehör', ref: 1 },{ name: 'Wohnwägen & Zubehör', ref: 1 },{ name: 'Nutzfahrzeuge & Zubehör', ref: 1 },{ name: 'weitere', ref: 1 },
-        { name: 'Elektronik', ref: 0 },{ name: 'Audio', ref: 10 },{ name: 'Foto', ref: 10 },{ name: 'Audio', ref: 10 },{ name: 'Haushaltsgeräte', ref: 10 },{ name: 'Video & TV', ref: 10 },{ name: 'Handy & Telefon', ref: 10 },{ name: 'Software', ref: 10 },{ name: 'Konsolen', ref: 10 },
+        { name: 'Fahrräder & Zubehör', ref: 1 },{ name: 'Wohnwägen & Zubehör', ref: 1 },{ name: 'weitere', ref: 1 },
+        { name: 'Elektronik', ref: 0 },{ name: 'Audio', ref: 10 },{ name: 'Foto', ref: 10 },{ name: 'Haushaltsgeräte', ref: 10 },{ name: 'Video & TV', ref: 10 },{ name: 'Handy & Telefon', ref: 10 },{ name: 'Software', ref: 10 },{ name: 'Konsolen', ref: 10 },
         { name: 'PCs & Zubehör', ref: 10 },{ name: 'Notebooks', ref: 10 },{ name: 'Videospiele', ref: 10 },{ name: 'weitere', ref: 10 },
-        { name: 'Familie', ref: 0 },{ name: 'Baby-Ausstattung', ref: 22 },{ name: 'Baby-Baby-Ausstattung', ref: 22 },{ name: 'Spielsachen', ref: 22 },{ name: 'weitere', ref: 22 },
-        { name: 'Freizeit & Hobby', ref: 0 },{ name: 'Denksport', ref: 26 },{ name: 'Sport', ref: 26 },{ name: 'Denksport', ref: 26 },{ name: 'Kochen', ref: 26 },{ name: 'Kunst', ref: 26 },{ name: 'Basteln', ref: 26 },{ name: 'Modellbau', ref: 26 },{ name: 'Reise', ref: 26 },
+        { name: 'Familie', ref: 0 },{ name: 'Baby-Ausstattung', ref: 22 },{ name: 'Spielsachen', ref: 22 },{ name: 'weitere', ref: 22 },
+        { name: 'Freizeit & Hobby', ref: 0 },{ name: 'Denksport', ref: 26 },{ name: 'Sport', ref: 26 },{ name: 'Kochen', ref: 26 },{ name: 'Kunst', ref: 26 },{ name: 'Basteln', ref: 26 },{ name: 'Modellbau', ref: 26 },{ name: 'Reise', ref: 26 },
         { name: 'Camping', ref: 26 },{ name: 'Musik, Filme, Bücher', ref: 26 },{ name: 'weitere', ref: 26 },
         { name: 'Haustiere', ref: 0 },{ name: 'Katzen', ref: 37 },{ name: 'Hunde', ref: 37 },{ name: 'Reptilien', ref: 37 },{ name: 'Spinnen', ref: 37 },{ name: 'Vögel', ref: 37 },{ name: 'Kleintiere', ref: 37 },{ name: 'Fische', ref: 37 },{ name: 'Pferde', ref: 37 },{ name: 'weitere', ref: 37 },
         { name: 'Haus & Garten', ref: 0 },{ name: 'Kinderzimmer', ref: 47 },{ name: 'Schlafzimmer', ref: 47 },{ name: 'Küche & Esszimmer', ref: 47 },{ name: 'Wohnzimmer', ref: 47 },{ name: 'Büro', ref: 47 },{ name: 'Badezimmer', ref: 47 },{ name: 'Garten & Zubehör', ref: 47 },{ name: 'weitere', ref: 47 },
-        { name: 'Haus & Mode & Beauty', ref: 0 },{ name: 'Kinderkleidung', ref: 56 },{ name: 'Babykleidung', ref: 56 },{ name: 'Herrenkleidund', ref: 56 },{ name: 'Damenkleidung', ref: 56 },{ name: 'Accessoires & Schmuck', ref: 56 },{ name: 'Gesichtpflege', ref: 56 },{ name: 'Körperpflege', ref: 56 },
-        { name: 'Haus & Haarpflege & Beauty', ref: 56 },{ name: 'Haarpflege', ref: 56 },{ name: 'weitere', ref: 56 },
+        { name: 'Mode & Beauty', ref: 0 },{ name: 'Kinderkleidung', ref: 56 },{ name: 'Babykleidung', ref: 56 },{ name: 'Herrenkleidund', ref: 56 },{ name: 'Damenkleidung', ref: 56 },{ name: 'Accessoires & Schmuck', ref: 56 },{ name: 'Gesichtpflege', ref: 56 },{ name: 'Körperpflege', ref: 56 },
+        { name: 'Haarpflege', ref: 56 },{ name: 'weitere', ref: 56 },
     ]
     let cat_sql = 'INSERT INTO category_table (name, parent) VALUES ';
     for (x = 0; x < cat_arr.length; x++) {
