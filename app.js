@@ -79,7 +79,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-db.createConnection(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME)
+db.createConnection(process.env.HOST, process.env.DB_PORT, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME)
 .then(async () => {
   await db.createTables();
 
