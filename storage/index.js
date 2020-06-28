@@ -78,6 +78,7 @@ module.exports = {
 // ---------------------------------------------------------------------------------------
 
 async function initalize_dataset () {
+    console.log('Befülle Datenbank mit Testdaten ...\n');
     // Nutzer anlegen
     let user_arr = [
         { name: 'HansPeter', mail: 'hanspeter@gmx.de', pwd: bcrypt.hashSync('wordpass', 10), adr: '69469 Weinheim', phone: '' },
@@ -95,6 +96,7 @@ async function initalize_dataset () {
         else user_sql = user_sql + ';';
     }
 
+    // Artikel anlegen
     let art_arr = [
         { id: 1, title: 'Grafikkarte Nvidia GTX 980 TI', desc: 'Gebrauchte Grafikkarte mit 4GB Grafikspeicher und guter Kühllösung. Wärmeleitpaste wurde erneuert. Guter Zustand.', price: 100.00, owner: 7 },
         { id: 2, title: 'AMD Sapphire RX 580 Nitro', desc: 'Hat mir viele Jahre lang gute Dienste geleistet, werde mich aber nun davon trennen müssen. Orginalverpackung noch vorhanden.', price: 88.50, owner: 3 },
@@ -106,7 +108,7 @@ async function initalize_dataset () {
         { id: 8, title: 'Fahrradklingel Rot', desc: 'Klingelt, Bimmelt und Schallert. Ein Muss für den selbstbewussten Radler', price: 10.00, owner: 2 },
         { id: 9, title: '24 Zoll Monitor Samsung - HDMI', desc: 'Wurde als Zweitmonitor gebraucht, aber lange nicht mehr genutzt. Sucht deswegen ein neues Zuhause. Bitte nur ernsthafte Anfragen!', price: 60.00, owner: 7 },
         { id: 10, title: 'Handyhülle für iphone-7', desc: 'Überteurte Hülle für ein überteuertes Produkt.', price: 537.69, owner: 4 },
-        { id: 11, title: 'Periskop', desc: 'Zum Sterne betrachten oder auch um die Nachbarn auszuspannen.', price: 78.00, owner: 6 },
+        { id: 11, title: 'Teleskop', desc: 'Zum Sterne betrachten oder auch um die Nachbarn auszuspannen.', price: 78.00, owner: 6 },
         { id: 12, title: 'Gta 5 für die PS3', desc: 'Vielleicht kümmert sich unser Sohn auch mal um die Schule wenn er nichts mehr zu spielen hat.', price: 15.00, owner: 3 },
         { id: 13, title: 'Geschirrsortiment Porzellan', desc: 'Zerbrechlich!', price: 45.00, owner: 5 },
         { id: 14, title: 'Kratzbaum 50cm', desc: 'Perfekt für alle Katzen geeignet.', price: 27.60, owner: 4 },
@@ -119,6 +121,7 @@ async function initalize_dataset () {
         else art_sql = art_sql + ';';
     }
 
+    // Kategorien anlegen
     let cat_arr = [
         { name: 'Fahrzeuge', ref: 0 },{ name: 'Autos & Zubehör', ref: 1 },{ name: 'Fahrzeuge', ref: 1 },{ name: 'Boote & Zubehör', ref: 1 },{ name: 'Laster & Zubehör', ref: 1 },{ name: 'Motorräder & Zubehör', ref: 1 },{ name: 'Nutzfahrzeuge & Zubehör', ref: 1 },
         { name: 'Fahrräder & Zubehör', ref: 1 },{ name: 'Wohnwägen & Zubehör', ref: 1 },{ name: 'Nutzfahrzeuge & Zubehör', ref: 1 },{ name: 'weitere', ref: 1 },
@@ -134,11 +137,12 @@ async function initalize_dataset () {
     ]
     let cat_sql = 'INSERT INTO category_table (name, parent) VALUES ';
     for (x = 0; x < cat_arr.length; x++) {
-        cat_sql = cat_sql + `('${cat_arr[x].name}','${cat_arr[x].ref}'),`;
-        if (x < cat_sql.length - 1) cat_sql = cat_sql + ',';
+        cat_sql = cat_sql + `('${cat_arr[x].name}','${cat_arr[x].ref}')`;
+        if (x < cat_arr.length - 1) cat_sql = cat_sql + ',';
         else cat_sql = cat_sql + ';';
     }
 
+    // Artikel mit Kategorien verknüpfen
     let art_cat_arr = [
         { article: 1, cat: 10 },{ article: 1, cat: 18 },{ article: 2, cat: 10 },{ article: 2, cat: 18 },{ article: 3, cat: 26 },{ article: 3, cat: 27 },{ article: 4, cat: 1 },{ article: 5, cat: 8 },
         { article: 5, cat: 1 },{ article: 6, cat: 56 },{ article: 6, cat: 59 },{ article: 7, cat: 37 },{ article: 7, cat: 42 },{ article: 8, cat: 1 },{ article: 8, cat: 7 },{ article: 9, cat: 10 },
@@ -147,8 +151,60 @@ async function initalize_dataset () {
     ]
     let art_cat_sql = 'INSERT INTO art_cat_table (article, category) VALUES ';
     for (x = 0; x < art_cat_arr.length; x++) {
-        art_cat_sql = art_cat_sql + `('${art_cat_arr[x].article}','${art_cat_arr[x].cat}'),`;
-        if (x < art_cat_sql.length - 1) art_cat_sql = art_cat_sql + ',';
+        art_cat_sql = art_cat_sql + `('${art_cat_arr[x].article}','${art_cat_arr[x].cat}')`;
+        if (x < art_cat_arr.length - 1) art_cat_sql = art_cat_sql + ',';
         else art_cat_sql = art_cat_sql + ';';
+    }
+
+    // Artikel und Bilder verknüpfen
+    let art_pic_arr = [
+        { art: 1, ctr: 0, pic: 'art1pic0.jpg' },{ art: 1, ctr: 1, pic: 'art1pic1.jpg' },{ art: 1, ctr: 2, pic: 'art1pic2.jpg' },
+        { art: 2, ctr: 0, pic: 'art2pic0.jpg' },
+        { art: 6, ctr: 0, pic: 'art6pic0.jpg' },
+        { art: 7, ctr: 0, pic: 'art7pic0.jpg' },{ art: 7, ctr: 1, pic: 'art7pic1.jpg' },
+        { art: 8, ctr: 0, pic: 'art8pic0.jpg' },
+        { art: 11, ctr: 0, pic: 'art11pic0.jpg' },{ art: 11, ctr: 1, pic: 'art11pic1.jpg' },{ art: 11, ctr: 2, pic: 'art11pic2.jpg' },
+        { art: 12, ctr: 0, pic: 'art12pic0.jpg' },
+        { art: 15, ctr: 0, pic: 'art15pic0.jpg' },{ art: 15, ctr: 1, pic: 'art15pic1.jpg' },{ art: 15, ctr: 2, pic: 'art15pic2.jpg' }
+    ]
+    let art_pic_sql = 'INSERT INTO art_pic_table (article, ctr, picture) VALUES ';
+    for (x = 0; x < art_pic_arr.length; x++) {
+        art_pic_sql = art_pic_sql + `('${art_pic_arr[x].art}','${art_pic_arr[x].ctr}','${art_pic_arr[x].pic}')`;
+        if (x < art_pic_arr.length - 1) art_pic_sql = art_pic_sql + ',';
+        else art_pic_sql = art_pic_sql + ';';
+    }
+
+    // Ein paar Chat-Nachrichten anlegen
+    let chat_arr = [
+        { sender: 1, receiver: 3, article: 2, msg: 'Hey, ist die Karte noch zu haben? Versand möglich?' },{ sender: 3, receiver: 1, article: 2, msg: 'Moin, ja is noch da. Versand per DHL für 5€ Aufpreis.' },
+        { sender: 5, receiver: 6, article: 11, msg: 'Hätte das Teil gerne um meine komischen Nachbarn zu beobachten, ist es dafür geeignet?' },{ sender: 5, receiver: 6, article: 11, msg: 'Also ich frage natürlich für einen Freund meine ich, ich würde sowas nie machen!' },
+        { sender: 1, receiver: 4, article: 7, msg: 'Groß genug um meine Frau darin einzusperren?' },{ sender: 4, receiver: 1, article: 7, msg: 'Jetzt hören Sie mal! So können SIe doch nicht mit Ihrer Frau umgehen!' },
+        { sender: 4, receiver: 1, article: 7, msg: 'Ich glaub Ihnen gehts wohl zu gut!' },{ sender: 1, receiver: 4, article: 7, msg: 'Beruhigen Sie sich, war doch nur ein Scherz ... Ist der Käfig noch zu haben?' },
+        { sender: 7, receiver: 4, article: 10, msg: 'Warum so günstig?' }
+    ]
+    let chat_sql = 'INSERT INTO chat_table (sender, receiver, article, msg) VALUES ';
+    for (x = 0; x< chat_arr.length; x++) {
+        chat_sql = chat_sql + `('${chat_arr[x].sender}','${chat_arr[x].receiver}','${chat_arr[x].article}','${chat_arr[x].msg}')`;
+        if (x < chat_arr.length - 1) chat_sql = chat_sql + ',';
+        else chat_sql = chat_sql + ';';
+    }
+
+    try {
+        await query(user_sql);
+        console.log('Nutzer 1-7 angelegt: mail , password\t(1/6)');
+        for (x = 0; x < user_arr.length; x++) console.log(`${x}: ${user_arr[x].mail} , wordpass`);
+        await query(art_sql);
+        console.log('\nArtikel angelegt\t\t\t(2/6)\n');
+        await query(cat_sql);
+        console.log('Kategorien angelegt\t\t\t(3/6)\n');
+        await query(art_cat_sql);
+        console.log('Kategorien und Artikel verknüpft\t(4/6)');
+        await query(art_pic_sql);
+        console.log('Artikel und Bilder verknüpft\t\t(5/6)');
+        await query(chat_sql);
+        console.log('Chatnachrichten angelegt\t\t(6/6)');
+    } catch (err) {
+        console.log(err);
+        process.exit(1);
     }
 }
