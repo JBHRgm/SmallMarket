@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>SmallMarket</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/article_view.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+  <link href="/static/styles/article_view.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <form method="GET" action="/" id="searchform">
+        <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+          <a class="navbar-brand" href="#"><div class="row pl-3"><img src="/static/img/logo.jpg" height ="35"><h4 class="pl-3">Small Market</h4></div></a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="form-inline">
+              <input class="form-control mr-2 ml-md-5" type="text" placeholder="..." name="search" id="search" value="<%=locals.search%>">
+              <button class="btn btn-outline-primary" type="submit" id="searchsubmit">Suchen</button> 
+            </div>
+            
+      
+            <!-- Nav Item - Personal -->
+            <div class="nav-item dropdown ml-auto mt-2 mt-md-0">
+              <a class="btn btn-link" type="button" id="userDropdown" role="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <span class="mr-2 d-none d-inline text-secondary font-weight-bold small">
+                    Persönlich
+                    <a class="btn btn-secondary btn-circle" data-toggle="dropdown">
+                      <i class="fas fa-user text-white"></i>
+                    </a>
+                  </span>
+                </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                  <% if (user && user.name) { %>
+                    <a class="dropdown-item" href="/profile/<%=user.name%>">
+                  <% } else { %>
+                    <a class="dropdown-item" href="/login">
+                  <% } %>
+                      <i class="fas fa-user fa-sm fa-fw mr-2"></i>
+                      Profil
+                  </a>
+                  <a class="dropdown-item" href="/chat">
+                    <i class="fas fa-envelope fa-sm fa-fw mr-2"></i>
+                      Nachrichten
+                  </a>
+      
+                  <div class="dropdown-divider"></div>
+                  <% if (user && user.id) { %>
+                    <a class="dropdown-item" href="/logout">
+                      <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
+                      Logout
+                    </a>
+                  <% } else { %>
+                    <a class="dropdown-item" href="/login">
+                      <i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i>
+                      Login
+                    </a>
+                  <% } %>
+              </div>
+            </div>
+          </div>
+        </nav>
+    </form>
+
+    <div class="wrapper">
+        <div class="row rounded bg-secondary text-white m-3 p-3">
+            <p class="h3 col-9"><%=article['title']%></p>
+        </div>
+        <div style="display: block;" class="mx-3">
+            <div class="rounded bg-secondary p-1">
+                <div class="cont" id="picwrapper">
+                    <% if (pictures.length > 0) { %>
+                        <% for (x = 0; x < pictures.length; x++) { %>
+                            <img src="/static/img/articles/art<%=article['id']%>/<%=pictures[x]['picture']%>" class="pics">
+                        <% } %>
+                        <button class="pic-button" onclick="slide(-1)" style="left: 0%;">&#10094;</button>
+                        <button class="pic-button" onclick="slide(1)" style="right: 0%;">&#10095;</button>
+                     <% } else { %>
+                        <img class="pics" src="/static/img/articles/no-image-found.png">
+                    <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="row rounded bg-secondary text-white p-3 m-3">
+              <div class="col-md-7 rounded bg-dark">
+                <h3 id="ownername" class="pt-2" onclick="$('#profilelink')[0].click();"><%=owner['name']%></h3>
+                <hr class="my-3" style="border-color: grey;">
+                <a href="mailto:<%=owner['mail']%>"><i class="fas fa-envelope mr-2"></i><%=owner['mail']%></a>
+                <p class="my-2"><i class="fas fa-map-marker-alt mr-2"></i><%=owner['address']%></p>
+                <p class="mb-2"><i class="fas fa-phone-alt mr-2"></i><%=owner['phone'] || 'privat'%></p>
+                <div style="display: flex; flex-wrap: wrap;" class="justify-content-between">
+                    <p class="text-muted my-0">Registriert seit: <%=owner['registered']%></p>
+                    <a id="profilelink" class="text-muted" href="/profile/<%=owner['name']%>">Anzeigen: <%=owner['count']%></a>
+                </div>
+                <hr class="my-3" style="border-color: grey;">
+                <% if (user && user.id) { %>
+                  <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#messageModal">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
+                <% } else { %>
+                  <button class="btn btn-primary mb-3" data-toggle="collapse" data-target="#tooltip" aria-expanded="false" aria-controls="tooltip">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
+                  <span id="tooltip" class="text-muted ml-2 collapse">Bitte melden Sie sich an</span>
+                <% } %>
+              </div>
+              <div class="col-md-5">
+                  <p class="text-white float-right pricefont"><%=article['price'].toFixed(2)%> €</p>
+              </div>
+              <div style="display: flex; width: 100%;" class="justify-content-end">
+                <div class="ml-auto">Erstellt am: <%=article['created']%></div>
+              </div>
+            </div>
+            <div class="rounded bg-secondary text-white p-3 m-3">
+              <h3>Beschreibung</h3>
+              <hr>
+              <p><%=article['description']%></p>
+            </div>
+    </div>
+    
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <h5 class="modal-title" id="exampleModalLabel">Nachricht schreiben</h5>
+              <small>An: <a href="/profile/<%=owner['name']%>"><%=owner['name']%></a> - bezüglich: <a href="/article/<%=article['id']%>/<%=article['title']%>"><%=article['title']%></a></small>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <textarea id="msg-area" rows="5" style="box-sizing: border-box; width:100%;" placeholder="Nachricht hier eingeben ..."></textarea>
+            <input type="checkbox" id="aid" value="<%=article['id']%>" hidden checked>
+            <input type="checkbox" id="uid" value="<%=owner['id']%>" hidden checked>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="message()">Nachricht senden</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</body>
+<script>
+  function message () {
+    let msg = $('#msg-area').val().trim();
+    if (msg != '') {
+      let aid = $('#aid').val();
+      let uid = $('#uid').val();
+      $.ajax({
+        url: '/chat',
+        method: 'POST',
+        dataType: 'JSON',
+        data: { aid: aid, uid: uid, msg: msg }
+      })
+      .then((response) => {
+        $('#messageModal').modal('hide');
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Ein Fehler ist aufgetreten!');
+      })
+    }
+  }
+</script>
+</html>
