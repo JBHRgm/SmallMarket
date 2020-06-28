@@ -7,6 +7,6 @@ SmallMarket ist eine einfache Webanwendung die auf dem Web Framework Express von
 Zum Einsatz kommen dabei:
 - Express als Framework von NodeJS,
 - EJS als Template Engine
-- MongoDB als Datenbank 
+- MySQL als Datenbank 
 - Redis als Sessionstore
 - Docker/Docker-Compose
