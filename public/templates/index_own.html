@@ -74,13 +74,13 @@
     </div>
   </nav>
     <div style="display: flex; flex-wrap: wrap;" id="bodywrapper">
-      <div class="col-md-3">
+      <div class="col-lg-3">
         <div class="card bg-secondary text-white m-3 p-2">
           <div class="row justify-content-between">
             <h3 class="d-inline ml-3">Kategorien:</h3>
-            <button type="button" class="btn btn-outline-light d-md-none float-right mr-3" data-toggle="collapse" data-target="#categorywrapper" aria-controls="categorywrapper"><i class="fas fa-bars"></i></button>
+            <button type="button" class="btn btn-outline-light d-lg-none float-right mr-3" data-toggle="collapse" data-target="#categorywrapper" aria-controls="categorywrapper"><i class="fas fa-bars"></i></button>
           </div>
-          <div id="categorywrapper" class="collapse d-md-block">
+          <div id="categorywrapper" class="collapse d-lg-block">
           <% for (x = 0; x < categories.length; x++) { %>
             <% if (categories[x]['parent'] == 0) { %>
               <% if (x > 0) { %>
@@ -126,10 +126,10 @@
         <div class="card bg-secondary text-white m-3 p-2">
           <div class="row justify-content-between">
             <h3 class="d-inline ml-3">Gebiet:</h3>
-            <button type="button" class="btn btn-outline-light d-md-none float-right mr-3" data-toggle="collapse" data-target="#locwrapper" aria-controls="locwrapper"><i class="fas fa-bars"></i></button>
+            <button type="button" class="btn btn-outline-light d-lg-none float-right mr-3" data-toggle="collapse" data-target="#locwrapper" aria-controls="locwrapper"><i class="fas fa-bars"></i></button>
           </div>
           
-          <div class="card bg-dark my-2 p-3 collapse d-md-block" id="locwrapper">
+          <div class="card bg-dark my-2 p-3 collapse d-lg-block" id="locwrapper">
             <ul class="list-group">
               <% for (x = 0; x < locations.length; x++) { %>
                 <li class="d-flex justify-content-between align-items-center filter-hover" style="padding: 2px 5px;" onclick="checked(this)"><%=locations[x]['address']%> 
@@ -146,7 +146,7 @@
         </div>
         <input type="hidden" name="page" id="page-input">
       </div>
-      <div class="col-md-9 pl-0">
+      <div class="col-lg-9 pl-0">
         <div class="row rounded bg-light text-black m-3 p-3">
           <label class="m-0"><input class="mr-2 ml-4" type="radio" name="order" value="date-a" <% if (order == 'date-a') { %> checked <% } %>>Neueste zuerst</label>
           <label class="m-0"><input class="mr-2 ml-4" type="radio" name="order" value="date-d" <% if (order == 'date-d') { %> checked <% } %>>Älteste zuerst</label>

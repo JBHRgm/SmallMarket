@@ -108,10 +108,15 @@
                     <a id="profilelink" class="text-muted" href="/profile/<%=owner['name']%>">Anzeigen: <%=owner['count']%></a>
                 </div>
                 <hr class="my-3" style="border-color: grey;">
-                <button class="btn btn-primary mb-3">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
+                <% if (user && user.id) { %>
+                  <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#messageModal">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
+                <% } else { %>
+                  <button class="btn btn-primary mb-3" data-toggle="collapse" data-target="#tooltip" aria-expanded="false" aria-controls="tooltip">Nachricht senden<i class="fas fa-envelope ml-2"></i></button>
+                  <span id="tooltip" class="text-muted ml-2 collapse">Bitte melden Sie sich an</span>
+                <% } %>
               </div>
               <div class="col-md-5">
-                  <p class="text-white float-right pricefont"><%=article['price']%> €</p>
+                  <p class="text-white float-right pricefont"><%=article['price'].toFixed(2)%> €</p>
               </div>
               <div style="display: flex; width: 100%;" class="justify-content-end">
                 <div class="ml-auto">Erstellt am: <%=article['created']%></div>
@@ -122,9 +127,53 @@
               <hr>
               <p><%=article['description']%></p>
             </div>
-        </div>
-        
     </div>
     
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <h5 class="modal-title" id="exampleModalLabel">Nachricht schreiben</h5>
+              <small>An: <a href="/profile/<%=owner['name']%>"><%=owner['name']%></a> - bezüglich: <a href="/article/<%=article['id']%>/<%=article['title']%>"><%=article['title']%></a></small>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <textarea id="msg-area" rows="5" style="box-sizing: border-box; width:100%;" placeholder="Nachricht hier eingeben ..."></textarea>
+            <input type="checkbox" id="aid" value="<%=article['id']%>" hidden checked>
+            <input type="checkbox" id="uid" value="<%=owner['id']%>" hidden checked>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="message()">Nachricht senden</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 </body>
+<script>
+  function message () {
+    let msg = $('#msg-area').val().trim();
+    if (msg != '') {
+      let aid = $('#aid').val();
+      let uid = $('#uid').val();
+      $.ajax({
+        url: '/chat',
+        method: 'POST',
+        dataType: 'JSON',
+        data: { aid: aid, uid: uid, msg: msg }
+      })
+      .then((response) => {
+        $('#messageModal').modal('hide');
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Ein Fehler ist aufgetreten!');
+      })
+    }
+  }
+</script>
 </html>

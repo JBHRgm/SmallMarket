@@ -81,7 +81,10 @@ app.use(passport.session());
 
 db.createConnection(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME)
 .then(async () => {
-  await db.createTables()
+  await db.createTables();
+
+  await db.initalize_dataset();         // Diese Zeile auskommentieren, falls die Datenbank mit Testdaten gefüttert werden soll, also am besten beim ersten Mal starten auskommentieren und dann wieder als Kommentar setzen
+
   console.log('Connected to MySQL Database.');
   app.listen(process.env.PORT, function () {
     console.log('******************************************************************');
@@ -114,9 +117,9 @@ app.use('/register', redirectHome, require('./routes/register'));
 
 app.use('/profile', require('./routes/profile'));
 
-app.use('/logout', isAuthenticated, require('./routes/logout'));
+app.use('/chat', isAuthenticated, require('./routes/chat'));
 
-//app.use('/settings', isAuthenticated, require('./routes/setting.js'));
+app.use('/logout', isAuthenticated, require('./routes/logout'));
 
 
 // -------------------------------------------------------------------------------------------------------------------------------- /Routes
@@ -131,7 +134,7 @@ app.use('/logout', isAuthenticated, require('./routes/logout'));
 // -------------------------------------------------------------------------------------------------------------------------------- Error handler
 // handle error 404 - page not found
 app.use('*', function (req, res) {
-  return res.send('Seems like you ran into a 404 Error, do you know where to go?');
+  return res.send('<h2>Fehler 404</h2><br><h3>Bitte überprüfen Sie Ihre Eingabe.</h3>');
 });
 
 // handle any server error

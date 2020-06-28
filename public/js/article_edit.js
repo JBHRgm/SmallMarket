@@ -15,11 +15,11 @@ function submit_new() {
         $('#a-cat').val($(maincat[0]).val());
     }
     if (subcat.length > 0) $('#a-subcat').val($(subcat[0]).val());
-    if ($('#new-form')[0].checkValidity() == true) $('#new-form').submit();
+    $('#new-submit').click();
 }
 
-window.onload = function () {
-    document.getElementById('apicture').addEventListener('change', function (event) {
+function upload_file () {
+    return new Promise((res, rej) => {
         let form = $('#pic-form')[0];
         let data = new FormData(form);
         if ($('#apicture').val() != '') {
@@ -31,17 +31,19 @@ window.onload = function () {
                 contentType: false,
                 cache: false,
             })
-                .then(function (response) {
-                    let pc = $('#pctr').val();
-                    $('#pctr').val(parseInt($('#pctr').val()) + 1);
-                    let el = document.createElement('img');
-                    el.src = `/static/img/articles/art${response['aid']}/art${response['aid']}pic${pc}.jpg`;
-                    el.className = 'pics';
-                    $(el).insertBefore($('#picwrapper button').first());
-                })
-                .catch(function (err) {
-                    console.error(err);
-                });
+            .then(function (response) {
+                let pc = $('#pctr').val();
+                $('#pctr').val(parseInt($('#pctr').val()) + 1);
+                let el = document.createElement('img');
+                el.src = `/static/img/articles/art${response['aid']}/art${response['aid']}pic${pc}.jpg`;
+                el.className = 'pics';
+                $(el).insertBefore($('#picwrapper button').first());
+                res(pc);
+            })
+            .catch(function (err) {
+                console.error(err);
+                rej(0);
+            });
         }
-    });
+    })
 }

@@ -26,6 +26,9 @@ router.get('/:id/del', isAuthenticated, async function (req, res) {
     return res.redirect('/profile/' + req.user.name);
 })
 
+router.get('/:id/edit', isAuthenticated, async function (req, res) {
+    return res.send('<h3>To be done ...</h3>');
+})
 
 router.get('/:id/:name', async function (req, res, next) { 
     let a_id = req.params.id || 0;

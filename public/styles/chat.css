@@ -1,0 +1,33 @@
+.chat-message {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    max-width: 70%;
+    overflow-x: hidden;
+    word-wrap: break-word;
+}
+
+.chat-message-wrapper {
+    display: flex;
+    margin: 0.25rem 0.5rem;
+    flex-direction: column;
+}
+
+.chat-message-date {
+    color: #7c838a;
+}
+
+.chat-selector {
+    border-bottom: 1px solid #7c838a;
+    border-top: 1px solid #7c838a;
+    padding: 0.5rem 0;
+}
+
+.chat-selector:hover {
+    background-color: #242424;
+}
+
+@media screen and (max-width: 550px) {
+    .chat-message {
+        max-width: 85%;
+    }
+}

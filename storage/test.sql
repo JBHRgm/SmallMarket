@@ -42,11 +42,17 @@ INSERT INTO category_table (name, parent) VALUES ('Haustiere',0),('Katzen',37),(
 INSERT INTO category_table (name, parent) VALUES ('Haus & Garten',0),('Kinderzimmer',47),('Schlafzimmer',47),('Küche & Esszimmer',47),('Wohnzimmer',47),('Büro',47),('Badezimmer',47),('Garten & Zubehör',47),('weitere',47);
 INSERT INTO category_table (name, parent) VALUES ('Mode & Beauty',0),('Kinderkleidung',56),('Babykleidung',56),('Herrenkleidund',56),('Damenkleidung',56),('Accessoires & Schmuck',56),('Gesichtpflege',56),('Körperpflege',56),('Haarpflege',56),('weitere',56);
 
-INSERT INTO chat_table (sender, receiver, article, msg) VALUES (1, 3, 2, 'Heyo waddup');
+INSERT INTO chat_table (sender, receiver, article, msg) VALUES (1, 3, 3, 'Heyo waddup'),(1,3,3,'waddup'),(3,1,3,'heyo'),(4,3,3,'noch zu haben?'),(5,3,12,'r'),(3,7,6,'geil');
 
 DELETE FROM user_table WHERE id = 3;
 DELETE FROM art_pic_table WHERE article = 1 AND ctr > 2;
 SELECT id FROM article_table WHERE title LIKE '%grafik%';
+
+SELECT * FROM chat_table AS c INNER JOIN article_table AS a ON a.id = c.article INNER JOIN user_table AS u on (u.id = c.sender OR u.id = c.receiver) WHERE c.sender = 4 OR c.receiver = 4;
+SELECT sender, article, u.name, a.title, u.id from chat_table AS c INNER JOIN article_table AS a ON a.id = article INNER JOIN user_table AS u ON u.id = a.owner WHERE sender = 3 GROUP BY (article);
+SELECT tb.user, u.name, tb.article, a.title FROM (SELECT sender as user, article FROM chat_table WHERE receiver = 3 UNION SELECT receiver as user, article FROM chat_table WHERE sender = 3) AS tb INNER JOIN article_table AS a ON a.id = tb.article INNER JOIN user_table AS u ON u.id = tb.user;
+SELECT * FROM (SELECT DISTINCT sender, article FROM chat_table WHERE receiver = 3) AS xy INNER JOIN (SELECT DISTINCT receiver, article FROM chat_table WHERE sender = 3) AS zy ;
+SELECT id, sender, receiver, msg, date FROM chat_table WHERE article = 3 AND (sender = 1 OR receiver = 1) ORDER BY id;
 
 SELECT DISTINCT a.id, a.created, a.title, a.description, a.price, u.name, u.address, ap.picture FROM article_table AS a
 INNER JOIN art_cat_table AS ac ON ac.article = a.id AND a.price BETWEEN 0 AND 50

@@ -108,7 +108,7 @@
                 </div>
             </div>
             <div class="row rounded bg-secondary text-white m-3 p-3">
-                <div class="rounded bg-secondary p-1">
+                <div class="col-12 p-1">
                     <h3>Bilder</h3>
                     <div class="cont" id="picwrapper">
                             <button class="pic-button" onclick="slide(-1)" style="left: 0%;">&#10094;</button>
@@ -117,7 +117,7 @@
                     <div class="mt-2">
                         <form method="POST" action="./pic" enctype="multipart/form-data" id="pic-form">
                             <input type="number" name="ctr" id="pctr" value="0" hidden>
-                            <input type="file" name="a-picture" id="apicture" accept="image/*">
+                            <input type="file" name="a-picture" id="apicture" accept="image/*" onchange="file_upload()">
                         </form>
                     </div>
                 </div>
@@ -132,11 +132,17 @@
                 <input type="number" class="form-control" min="0" max="10000000" step="0.01" id="a-price" name="a-price" required>
             </div>
             <div class="row rounded bg-secondary text-white m-3 p-3">
+              <div class="col-12 px-0">
                 <h3>Beschreibung</h3>
                 <div style="display: block">
-                    <textarea name="a-description" id="a-description" cols="50" rows="10"></textarea>
+                    <textarea name="a-description" id="a-description" rows="10" style="box-sizing: border-box; width:100%;"></textarea>
                 </div>
-                <button type="button" class="btn btn-primary" id="new-submit" onclick="submit_new()">Anzeige erstellen</button>
+                <div class="float-right mt-2">
+                  <button type="button" class="btn btn-primary" id="new-submit-click" onclick="submit_new()">Anzeige erstellen</button>
+                  <button type="submit" id="new-submit" hidden></button>
+                </div>
+              </div>  
+              
             </div>
             <input type="checkbox" id="a-piccount" name="a-piccount" value="0" checked hidden />
             <input type="checkbox" id="a-cat" name="a-cat" value="0" checked hidden />
@@ -144,5 +150,13 @@
             </form>
         </div>
     </body>
-
+<script>
+  function file_upload () {
+    upload_file().then((cp) => {
+      cp = parseInt(cp);
+      if(!cp) showDivs(1);
+      else slide(1);
+    })
+  }
+</script>
 </html>

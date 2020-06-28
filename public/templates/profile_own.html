@@ -100,7 +100,7 @@
           <div class="form-row">
             <div class="form-group col-md-4">
               <label for="address">Gebiet:</label>
-              <input type="text" class="form-control" id="address" value="<%=user['address']%>" required disabled>
+              <input type="text" class="form-control" id="address" value="<%=user['address']%>" readonly disabled>
             </div>
           </div>
           <hr style="border-color: rgb(10,10,10)">
@@ -120,14 +120,16 @@
           </div>
           <hr class="my-3" style="border-color: grey;">
           <div class="float-right mb-3">
-            <button type="button" class="btn btn-primary" id="profile-submit">Bearbeiten</button>
+            <button type="button" class="btn btn-primary" id="profile-submit-click">Bearbeiten</button>
+            <button type="submit" id="profile-submit" hidden></button>
           </div>
           
         </form>
       </div>
     </div>
     <div class="row rounded bg-secondary text-white m-3 p-3">
-      <div class="float-right">
+      <h3 style="word-wrap: break-word;">Eigene Artikel:</h3>
+      <div class="ml-auto">
         <a role="button" class="btn btn-primary" href="/article/new">Neuer Artikel<i class="fas fa-plus ml-2"></i></a>
       </div>
     </div>
@@ -164,16 +166,15 @@
       <% } %>
     </div>
   </div>
-    
 </body>
 <script>
-    $('#profile-submit').on('click', (event) => {
-        if ($('#profile-submit').text() == 'Bearbeiten') {
+    $('#profile-submit-click').on('click', (event) => {
+        if ($('#profile-submit-click').text() == 'Bearbeiten') {
             $('input').prop('disabled', false);
-            $('#profile-submit').text('Speichern');
+            $('#profile-submit-click').text('Speichern');
             $('#profile-form').addClass('was-validated');
         }
-        else $('#profile-form').submit();
+        else $('#profile-submit').click();
     })
 
     function clicked (el) {
