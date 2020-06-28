@@ -1,7 +1,7 @@
 function select_cat(elem) {
     $('#subcats .form-check').css('display', 'none');
-    let aid = $(elem).children().val();
-    $('.sub' + aid).parent().parent().css('display', 'block');
+    let cid = $(elem).children().val();
+    $('.sub' + cid).parent().parent().css('display', 'block');
 }
 
 function submit_new() {

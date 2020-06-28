@@ -12,16 +12,17 @@ const flash_mw = require('./modules/flashes');
 const db = require('./storage');
 const {redirectHome, isAuthenticated} = require('./modules/auth-redirect');
 
-// if(process.env.DB_HOST != 'localhost'){
-//   const redis = require('redis');
-//   const redisClient = redis.createClient(process.env.REDIS_URL);
-//   const redisStore = require('connect-redis')(session);
-//   redisClient.on('error', (err) => {
-//     console.log('redis error: ', err);
-//     });
-// }
-
 if (dotenv.error) throw dotenv.error;
+
+const redis = require('redis');
+const redisClient = redis.createClient({
+  host: process.env.HOST,
+  port: process.env.REDIS_PORT
+});
+const redisStore = require('connect-redis')(session);
+redisClient.on('error', (err) => {
+  console.log('redis error: ', err);
+});
 
 const IN_PROD = process.env.NODE_ENV === 'production';
 const TTL = parseInt(process.env.SESS_LIFETIME);
@@ -46,8 +47,8 @@ app.use(
       sameSite: true,
       secure: IN_PROD,
     },
-    rolling: true
-    //store: new redisStore({client: redisClient}),
+    rolling: true,
+    store: new redisStore({client: redisClient}),
   })
 );
 
@@ -79,7 +80,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-db.createConnection(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME)
+db.createConnection(process.env.HOST, process.env.DB_PORT, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME)
 .then(async () => {
   await db.createTables();
 
