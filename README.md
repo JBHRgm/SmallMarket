@@ -2,7 +2,7 @@
 
 Bei der Applikation SmallMarket handelt es sich um eine Prüfungsaufgabe der Vorlesung NodeJS und Docker des Studienjahrgangs 2018 der DHBW Stuttgart Abteilung Informatik. Dozent der Vorlesung ist I. Buttig.
 
-SmallMarket ist eine einfache Webanwendung die auf dem Web Framework Express von NodeJS basiert. Das Konzept der Applikation lehnt an Ebay Kleinanzeigen an. Eine Platform über die Nutzer ihre persönliche Objekte zum Verkauf stellen können.
+SmallMarket ist eine einfache Webanwendung die auf dem Web Framework Express von NodeJS basiert. Das Konzept der Applikation lehnt an Ebay Kleinanzeigen an. Eine Plattform über die Nutzer ihre persönliche Objekte zum Verkauf anbieten können.
 
 Zum Einsatz kommen dabei:
 - Express als Framework von NodeJS,
